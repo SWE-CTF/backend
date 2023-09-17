@@ -26,12 +26,16 @@ public class Member {
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder
-    public Member(String username,String password, String name, String email){
+    public Member(String username,String password, String name, String email, Role role){
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
+        this.role = role;
     }
     public void joinTeam(Team team){
         this.team = team;
