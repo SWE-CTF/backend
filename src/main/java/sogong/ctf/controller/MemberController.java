@@ -2,6 +2,8 @@ package sogong.ctf.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,10 +26,9 @@ public class MemberController {
         return ResponseEntity.ok(find_member);
     }
 
-    @PostMapping("/api/member/login")
-    public ResponseEntity<Optional<Member>> loginMember(@RequestBody MemberFormDTO memberFormDTO){
-        Long member_id = memberService.login(memberFormDTO);
-        Optional<Member> find_member = memberService.findOne(member_id);
-        return ResponseEntity.ok(find_member);
+    @GetMapping("/")
+    public String test(){
+        return "index";
     }
+
 }

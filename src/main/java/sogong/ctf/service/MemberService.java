@@ -2,6 +2,11 @@ package sogong.ctf.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +22,7 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -39,14 +44,6 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
-    public Long login(MemberFormDTO memberFormDTO){
-        Optional<Member> find_member = memberRepository.findByUsername(memberFormDTO.getUsername());
-        if(!passwordEncoder.matches(memberFormDTO.getPassword(),find_member.get().getPassword())){
-            throw new IllegalStateException();
-        }
-        return find_member.get().getId();
-    }
-
     public List<Member> findMembers(){
         return memberRepository.findAll();
     }
@@ -59,5 +56,19 @@ public class MemberService {
         Optional<Member> find_member = memberRepository.findByUsername(memberFormDTO.getUsername());
         if(!find_member.isEmpty())
             throw new IllegalStateException("이미 존재하는 아이디입니다.");
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Member> find_member = memberRepository.findByUsername(username);
+        if(find_member.isEmpty()) {
+            throw new UsernameNotFoundException(username);
+        }
+
+        return User.builder()
+                .username(find_member.get().getUsername())
+                .password(find_member.get().getPassword())
+                .roles(find_member.get().getRole().getValue())
+                .build();
     }
 }
