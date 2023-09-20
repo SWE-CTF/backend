@@ -26,15 +26,15 @@ public class SecurityConfig {
                 .headers().frameOptions().disable();
 
         http.formLogin()
-                .loginPage("/member/login")
-                .loginProcessingUrl("/member/login_process")
+                .loginPage("/api/member/login")
+                .loginProcessingUrl("/api/member/login_process")
                 .defaultSuccessUrl("/")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .failureUrl("/member/login/fail")
+                .failureUrl("/api/member/login/fail")
             .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/api/member/logout"))
                 .invalidateHttpSession(true)
                 .deleteCookies("JESSIONID")
                 .logoutSuccessUrl("/");
