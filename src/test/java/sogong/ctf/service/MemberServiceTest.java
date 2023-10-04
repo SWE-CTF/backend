@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-import sogong.ctf.MemberFormDTO;
+import sogong.ctf.dto.MemberRequestDTO;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Role;
 import sogong.ctf.repository.MemberRepository;
@@ -32,10 +32,10 @@ public class MemberServiceTest {
     public void joinTest(){
 
         //given
-        MemberFormDTO memberFormDTO = new MemberFormDTO("Test","1234","Testname","test@gmail.com");
+        MemberRequestDTO memberRequestDTO = new MemberRequestDTO("Test","1234","Testname","test@gmail.com","nickname");
 
         //when
-        Long save_id = memberService.join(memberFormDTO);
+        Long save_id = memberService.join(memberRequestDTO);
 
         //then
         Optional<Member> save_member = memberRepository.findById(save_id);
@@ -51,12 +51,12 @@ public class MemberServiceTest {
     @Test (expected = IllegalStateException.class)
     public void joinValidateTest() throws Exception{
         //given
-        MemberFormDTO memberFormDTO = new MemberFormDTO("Test","1234","Testname","test@gmail.com");
-        MemberFormDTO memberFormDTO1 = new MemberFormDTO("Test","1111","Testname23","test123@gmail.com");
+        MemberRequestDTO memberRequestDTO = new MemberRequestDTO("Test","1234","Testname","test@gmail.com","nickname");
+        MemberRequestDTO memberRequestDTO1 = new MemberRequestDTO("Test","1111","Testname23","test123@gmail.com","nickname1");
 
         //when
-        memberService.join(memberFormDTO);
-        memberService.join(memberFormDTO1);
+        memberService.join(memberRequestDTO);
+        memberService.join(memberRequestDTO1);
 
         //then
         fail("예외 발생시 여기는 안나와야함");
