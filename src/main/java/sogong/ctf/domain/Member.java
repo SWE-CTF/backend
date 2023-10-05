@@ -31,14 +31,17 @@ public class Member {
     private Role role;
 
     @Builder
-    public Member(String username,String password, String name, String email, Role role){
+    public Member(String username,String password, String name, String email, String nickname,  Role role){
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
+        this.nickname = nickname;
         this.role = role;
     }
+
     public void joinTeam(Team team){
         this.team = team;
     }
+
 }
