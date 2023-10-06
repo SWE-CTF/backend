@@ -14,6 +14,10 @@ import sogong.ctf.dto.MemberResponseDTO;
 import sogong.ctf.dto.TokenDTO;
 import sogong.ctf.repository.MemberRepository;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.ValidationException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
 import java.util.Optional;
 
 
@@ -47,40 +51,51 @@ public class MemberService{
     private void validateDuplicateMember(MemberRequestDTO memberRequestDTO){
         Optional<Member> find_member = memberRepository.findByUsername(memberRequestDTO.getUsername());
         if(!find_member.isEmpty())
-            throw new IllegalStateException("이미 존재하는 아이디입니다.");
+            throw new IllegalStateException("username duplicate");
     }
 
-    @Transactional
+
     public MemberResponseDTO login(MemberRequestDTO request) throws BadCredentialsException{
         Optional<Member> member = memberRepository.findByUsername(request.getUsername());
         if(member.isEmpty())
-            throw new BadCredentialsException("아이디가 틀렸습니다.");
+            throw new BadCredentialsException("username false");
 
         if(!passwordEncoder.matches(request.getPassword(), member.get().getPassword()))
-            throw new BadCredentialsException("비번이 틀렸습니다.");
+            throw new BadCredentialsException("password false");
 
         return MemberResponseDTO.builder()
                 .username(member.get().getUsername())
                 .name(member.get().getName())
                 .email(member.get().getEmail())
                 .nickname(member.get().getNickname())
-                .role(member.get().getRole())
                 .token(TokenDTO.builder()
                         .token(jwtProvider.createToken(member.get().getUsername(),member.get().getRole())
                         ).build())
                 .build();
     }
 
-    @Transactional
-    public Boolean logout(TokenDTO tokenDTO){
+
+    public Boolean logout(HttpServletRequest httpServletRequest) throws Exception{
+
+        String token = jwtProvider.resolveToken(httpServletRequest);
+
+        TokenDTO tokenDTO = TokenDTO.builder()
+                .token(token)
+                .build();
+
+        if(!jwtProvider.validateToken(tokenDTO.getToken().toString()))
+            throw new ValidationException("Validation Out");
+
+        tokenDTO.setToken(token.substring(7));
+
         String username = jwtProvider.getUsername(tokenDTO.getToken().toString());
         Optional<Member> find_member = memberRepository.findByUsername(username);
 
         if(find_member.isEmpty())
-            return false;
+            throw new NoSuchProviderException("No user");
 
         return true;
-    }
 
+    }
 
 }

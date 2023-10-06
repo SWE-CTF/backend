@@ -17,7 +17,6 @@ public class MemberResponseDTO {
     private String email;
     private String nickname;
     private TokenDTO token;
-    private Role role;
 
     @Builder
     public MemberResponseDTO(Member member){
@@ -25,6 +24,5 @@ public class MemberResponseDTO {
         this.name = member.getName();
         this.email = member.getEmail();
         this.nickname = member.getNickname();
-        this.role = member.getRole();
     }
 }

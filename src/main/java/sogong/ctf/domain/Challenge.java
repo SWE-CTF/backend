@@ -20,28 +20,41 @@ public class Challenge {
 
     private String title;
     private String content;
+    private int correctCnt;
     private float memory;
     private float time;
-    private int point;
+    private String examiner;//출제자
 
+    /*
     @ManyToMany
     @JoinTable(
             name = "Challenge_Category",
             joinColumns = @JoinColumn(name = "challenge_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
+
+
     private List<Category> categories = new ArrayList<>();
+     */
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category categoryId;
 
     @Builder
-    public Challenge(String title, String content,float memory, float time, int point){
+    public Challenge(String title, String content,int correctCnt,float memory, float time, String examiner){
         this.title = title;
         this.content = content;
+        this.correctCnt = correctCnt;
         this.memory = memory;
         this.time = time;
-        this.point = point;
+        this.examiner = examiner;
     }
 
+    /*
     public void addCategory(Category category){
         this.categories.add(category);
     }
+
+     */
 }
