@@ -12,6 +12,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import sogong.ctf.domain.Role;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -32,13 +33,13 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .cors().disable()
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.authorizeRequests()
+                .antMatchers("/api/member/logout").hasAnyRole("MEMBER","ADMIN") //로그아웃 기능은 로그인해서 권한이 있을때만 가능
+                .antMatchers("/api/admin/**").hasRole("ADMIN") //어드민만 가능한 페이지
                 .antMatchers("/api/member/**").permitAll()
-                .antMatchers("/api/question/**").permitAll()
-                .anyRequest().denyAll()
+                .antMatchers("/api/**").permitAll() //테스트 단계라 모든 권한 허용
+                .anyRequest().denyAll() //위에서 설정한 url 제외 모든 요청 거부
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()

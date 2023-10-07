@@ -23,16 +23,22 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
 
+    /*
     @OneToOne
     @JoinColumn(name = "scoreboard_id")
     private Scoreboard scoreboard;
 
+
+     */
     @Builder
     public Team(String name){
         this.name = name;
     }
 
+    /*
     public void setScoreboard(Scoreboard scoreboard){
         this.scoreboard = scoreboard;
     }
+
+     */
 }

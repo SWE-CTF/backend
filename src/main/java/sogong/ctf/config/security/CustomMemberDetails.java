@@ -1,10 +1,12 @@
 package sogong.ctf.config.security;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sogong.ctf.domain.Member;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class CustomMemberDetails implements UserDetails {
@@ -21,9 +23,12 @@ public class CustomMemberDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collectors = new ArrayList<>();
-        collectors.add(()-> member.getRole().getValue());
-        return collectors;
+
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+
+        authorities.add(new SimpleGrantedAuthority(member.getRole().toString()));
+
+        return authorities;
     }
 
     @Override
