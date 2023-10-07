@@ -24,11 +24,11 @@ public class QuestionResponseDTO {
         this.write_time = write_time;
     }
 
-    public static QuestionResponseDTO toQuestionResponseDTO(Question q, String nickname){
+    public static QuestionResponseDTO toQuestionResponseDTO(Question q){
         return QuestionResponseDTO.builder()
                 .title(q.getTitle())
                 .content(q.getContent())
-                .writer(nickname)
+                .writer(q.getMemberId().getNickname())
                 .write_time(q.getWriteTime())
                 .build();
     }

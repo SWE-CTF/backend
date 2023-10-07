@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/api/member/**").permitAll()
+                .antMatchers("/api/question/**").permitAll()
                 .anyRequest().denyAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)

@@ -9,6 +9,7 @@ import sogong.ctf.dto.QuestionResponseDTO;
 import sogong.ctf.dto.QuestionSaveDTO;
 import sogong.ctf.repository.QuestionRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -17,20 +18,40 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     public void save(QuestionSaveDTO saveForm, Challenge challenge, Member memberId) {
-
-        Question q = new Question(saveForm.getTitle(),saveForm.getContent(),challenge,memberId);
+        Question q = Question.builder().title(saveForm.getTitle())
+                .challengeId(challenge)
+                .content(saveForm.getContent())
+                .memberId(memberId)
+                .writeTime(LocalDateTime.now())
+                .build();
         questionRepository.save(q);
 
     }
 
-    public QuestionResponseDTO findOne(long questionId) {
-        Optional<Question> find = questionRepository.findById(questionId);
-        if(find.isEmpty()){
+    public Optional<Question> findOne(long questionId) {
+        if (questionRepository.findById(questionId).isEmpty()) {
             return null;
         }
-        else{
-            Member member = find.get().getMemberId();
-            return QuestionResponseDTO.toQuestionResponseDTO(find.get(),member.getNickname());
-        }
+        return questionRepository.findById(questionId);
+    }
+
+    public Member findWriter(long questionId) {
+        Member writer = findOne(questionId).get().getMemberId();
+        return writer;
+    }
+
+    public QuestionResponseDTO findQuestion(long questionId) {
+        Optional<Question> q = findOne(questionId);
+        if (q.isEmpty()) return null;
+        return QuestionResponseDTO.toQuestionResponseDTO(q.get());
+    }
+
+    public void delete(long questionId) {
+        Question q = findOne(questionId).get();
+        questionRepository.delete(q);
+    }
+
+    public void put(long questionId, QuestionSaveDTO questionSaveDTO) {
+
     }
 }

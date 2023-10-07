@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
 @RequiredArgsConstructor
 public class Question {
     @Id @GeneratedValue

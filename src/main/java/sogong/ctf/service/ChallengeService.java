@@ -12,6 +12,7 @@ import sogong.ctf.repository.ChallengeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +28,8 @@ public class ChallengeService {
         }
         return list;
     }
-    public Challenge findByChallengeId(long id){
-        return challengeRepository.findById(id).orElseThrow();
+    public Optional<Challenge> findByChallengeId(long id){
+        return challengeRepository.findById(id);
 
     }
 }
