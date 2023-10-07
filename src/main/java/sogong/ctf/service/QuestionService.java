@@ -2,6 +2,7 @@ package sogong.ctf.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Question;
@@ -10,6 +11,7 @@ import sogong.ctf.dto.QuestionSaveDTO;
 import sogong.ctf.repository.QuestionRepository;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -29,9 +31,6 @@ public class QuestionService {
     }
 
     public Optional<Question> findOne(long questionId) {
-        if (questionRepository.findById(questionId).isEmpty()) {
-            return null;
-        }
         return questionRepository.findById(questionId);
     }
 
@@ -46,12 +45,15 @@ public class QuestionService {
         return QuestionResponseDTO.toQuestionResponseDTO(q.get());
     }
 
+    @Transactional
     public void delete(long questionId) {
         Question q = findOne(questionId).get();
         questionRepository.delete(q);
     }
 
-    public void put(long questionId, QuestionSaveDTO questionSaveDTO) {
-
+    @Transactional
+    public void update(long questionId, QuestionSaveDTO questionSaveDTO) {
+        Question q=findOne(questionId).orElseThrow(()->new NoSuchElementException());
+        q.updateQuestion(questionSaveDTO.getTitle(),questionSaveDTO.getContent());
     }
 }

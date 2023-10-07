@@ -24,7 +24,6 @@ import java.util.Optional;
 public class QuestionController {
     private final ChallengeService challengeService;
     private final QuestionService questionService;
-    private final MemberService memberService;
 
     @PostMapping("/save")//질문 게시글 작성
     public ResponseEntity save(@RequestBody QuestionSaveDTO saveForm) {//질문 작성
@@ -40,7 +39,7 @@ public class QuestionController {
             questionService.save(saveForm, findChallenge.get(), member);//질문 저장
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -50,30 +49,28 @@ public class QuestionController {
         if (question != null) {
             return ResponseEntity.ok(question);
         } else {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @DeleteMapping("/{questionId}")
-    public ResponseEntity deleteQuestion(@RequestParam("questionId") long questionId) {
+    public ResponseEntity deleteQuestion(@PathVariable("questionId") long questionId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomMemberDetails findMember = (CustomMemberDetails) authentication.getPrincipal();
         Member member = findMember.getMember();
-
         Member writer = questionService.findWriter(questionId);
-        if (member.equals(writer)) {
+        if (member.getId().equals(writer.getId())) {//글 작성자와 지우려고 하는 사람 일치 여부 확인
             questionService.delete(questionId);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(403).build();
         }
-        //글 작성자와 지우려고 하는 사람 일치 여부 확인
 
     }
 
     @PutMapping("/{questionId}")
     public ResponseEntity updateQuestion(@PathVariable("questionId") long questionId, @RequestBody QuestionSaveDTO questionSaveDTO) {
-        questionService.put(questionId, questionSaveDTO);
+        questionService.update(questionId, questionSaveDTO);
         return null;
     }
 

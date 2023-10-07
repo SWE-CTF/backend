@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Builder
 @RequiredArgsConstructor
 public class Question {
     @Id @GeneratedValue
@@ -27,11 +26,15 @@ public class Question {
     private Challenge challengeId;
 
     @Builder
-    public Question(String title, String content, Challenge challengeId, Member memberId) {
+    public Question(String title, String content, Challenge challengeId, Member memberId,LocalDateTime writeTime) {
         this.title = title;
         this.content = content;
         this.challengeId = challengeId;
         this.memberId = memberId;
-        this.writeTime =LocalDateTime.now();
+        this.writeTime=writeTime;
+    }
+    public void updateQuestion(String title,String content){
+        this.title=title;
+        this.content=content;
     }
 }
