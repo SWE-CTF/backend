@@ -1,8 +1,11 @@
 package sogong.ctf.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sogong.ctf.config.security.CustomMemberDetails;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Question;
@@ -19,11 +22,15 @@ import java.util.Optional;
 public class QuestionService {
     private final QuestionRepository questionRepository;
 
-    public void save(QuestionSaveDTO saveForm, Challenge challenge, Member memberId) {
+    public void save(QuestionSaveDTO saveForm, Challenge challenge) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomMemberDetails findMember = (CustomMemberDetails) authentication.getPrincipal();//사용자 확인
+        Member member = findMember.getMember();
+
         Question q = Question.builder().title(saveForm.getTitle())
                 .challengeId(challenge)
                 .content(saveForm.getContent())
-                .memberId(memberId)
+                .memberId(member)
                 .writeTime(LocalDateTime.now())
                 .build();
         questionRepository.save(q);

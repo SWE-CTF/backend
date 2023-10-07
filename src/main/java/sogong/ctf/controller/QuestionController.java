@@ -12,7 +12,6 @@ import sogong.ctf.domain.Member;
 import sogong.ctf.dto.QuestionResponseDTO;
 import sogong.ctf.dto.QuestionSaveDTO;
 import sogong.ctf.service.ChallengeService;
-import sogong.ctf.service.MemberService;
 import sogong.ctf.service.QuestionService;
 
 import java.util.Optional;
@@ -27,16 +26,11 @@ public class QuestionController {
 
     @PostMapping("/save")//질문 게시글 작성
     public ResponseEntity save(@RequestBody QuestionSaveDTO saveForm) {//질문 작성
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomMemberDetails findMember = (CustomMemberDetails) authentication.getPrincipal();
-        Member member = findMember.getMember();//사용자 확인
-
         Optional<Challenge> findChallenge = challengeService.findByChallengeId(saveForm.getChallengeId());//문제 번호 확인
         if (findChallenge.isEmpty())
             return ResponseEntity.notFound().build();//해당 문제 번호 없을 경우
-
         try {
-            questionService.save(saveForm, findChallenge.get(), member);//질문 저장
+            questionService.save(saveForm, findChallenge.get());//질문 저장
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
