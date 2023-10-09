@@ -6,5 +6,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class QuestionCommentDTO {
-    public String content;
+    private String content;
 }
