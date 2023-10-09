@@ -2,6 +2,8 @@ package sogong.ctf.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,11 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import sogong.ctf.config.security.CustomMemberDetails;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
+import sogong.ctf.dto.QuestionPagingDTO;
 import sogong.ctf.dto.QuestionResponseDTO;
 import sogong.ctf.dto.QuestionSaveDTO;
 import sogong.ctf.service.ChallengeService;
 import sogong.ctf.service.QuestionService;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -68,5 +74,17 @@ public class QuestionController {
         return null;
     }
 
+    @GetMapping("/paging")
+    public ResponseEntity<Map<String, Object>> paging(@PageableDefault(page = 1) Pageable page) {
+        int totalPage = questionService.getTotalPage(page);
+        List<QuestionPagingDTO> paging = questionService.paging(page);
+        if (paging.size() == 0) {
+            return ResponseEntity.status(404).build();
+        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("pagination", totalPage);
+        response.put("paging", paging);
+        return ResponseEntity.ok(response);
+    }
 
 }
