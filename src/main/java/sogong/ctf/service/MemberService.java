@@ -7,9 +7,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.config.security.JwtProvider;
-import sogong.ctf.dto.MemberRequestDTO;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Role;
+import sogong.ctf.dto.MemberRequestDTO;
 import sogong.ctf.dto.MemberResponseDTO;
 import sogong.ctf.dto.TokenDTO;
 import sogong.ctf.repository.MemberRepository;
@@ -17,21 +17,20 @@ import sogong.ctf.repository.MemberRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.ValidationException;
 import java.security.NoSuchProviderException;
-import java.security.SignatureException;
 import java.util.Optional;
 
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MemberService{
+public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public Long join(MemberRequestDTO memberRequestDTO){
+    public Long join(MemberRequestDTO memberRequestDTO) {
 
         validateDuplicateMember(memberRequestDTO);
         memberRequestDTO.setPassword(passwordEncoder.encode(memberRequestDTO.getPassword()));
@@ -48,19 +47,19 @@ public class MemberService{
         return memberRepository.save(member).getId();
     }
 
-    private void validateDuplicateMember(MemberRequestDTO memberRequestDTO){
+    private void validateDuplicateMember(MemberRequestDTO memberRequestDTO) {
         Optional<Member> find_member = memberRepository.findByUsername(memberRequestDTO.getUsername());
-        if(!find_member.isEmpty())
+        if (!find_member.isEmpty())
             throw new IllegalStateException("username duplicate");
     }
 
 
-    public MemberResponseDTO login(MemberRequestDTO request) throws BadCredentialsException{
+    public MemberResponseDTO login(MemberRequestDTO request) throws BadCredentialsException {
         Optional<Member> member = memberRepository.findByUsername(request.getUsername());
-        if(member.isEmpty())
+        if (member.isEmpty())
             throw new BadCredentialsException("username false");
 
-        if(!passwordEncoder.matches(request.getPassword(), member.get().getPassword()))
+        if (!passwordEncoder.matches(request.getPassword(), member.get().getPassword()))
             throw new BadCredentialsException("password false");
 
         return MemberResponseDTO.builder()
@@ -69,13 +68,13 @@ public class MemberService{
                 .email(member.get().getEmail())
                 .nickname(member.get().getNickname())
                 .token(TokenDTO.builder()
-                        .token(jwtProvider.createToken(member.get().getUsername(),member.get().getRole())
+                        .token(jwtProvider.createToken(member.get().getUsername(), member.get().getRole())
                         ).build())
                 .build();
     }
 
 
-    public Boolean logout(HttpServletRequest httpServletRequest) throws Exception{
+    public Boolean logout(HttpServletRequest httpServletRequest) throws Exception {
 
         String token = jwtProvider.resolveToken(httpServletRequest);
 
@@ -83,7 +82,7 @@ public class MemberService{
                 .token(token)
                 .build();
 
-        if(!jwtProvider.validateToken(tokenDTO.getToken().toString()))
+        if (!jwtProvider.validateToken(tokenDTO.getToken().toString()))
             throw new ValidationException("Validation Out");
 
         tokenDTO.setToken(token.substring(7));
@@ -91,7 +90,7 @@ public class MemberService{
         String username = jwtProvider.getUsername(tokenDTO.getToken().toString());
         Optional<Member> find_member = memberRepository.findByUsername(username);
 
-        if(find_member.isEmpty())
+        if (find_member.isEmpty())
             throw new NoSuchProviderException("No user");
 
         return true;
