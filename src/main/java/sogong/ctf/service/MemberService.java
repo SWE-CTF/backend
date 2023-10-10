@@ -96,4 +96,7 @@ public class MemberService {
         return true;
 
     }
+    public boolean IsEquals(Member member,Member writer){
+        return member.getId().equals(writer.getId());
+    }
 }
