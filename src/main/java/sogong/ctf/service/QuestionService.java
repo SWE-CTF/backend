@@ -5,11 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sogong.ctf.config.security.CustomMemberDetails;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Question;
@@ -29,8 +26,8 @@ import java.util.Optional;
 public class QuestionService {
     private final QuestionRepository questionRepository;
 
-    public long save(QuestionSaveDTO saveForm, Challenge challenge) {
-        Member member = getAuthentication();
+    @Transactional
+    public long save(Member member, QuestionSaveDTO saveForm, Challenge challenge) {
 
         Question q = Question.builder().title(saveForm.getTitle())
                 .challengeId(challenge)
@@ -38,16 +35,17 @@ public class QuestionService {
                 .memberId(member)
                 .writeTime(LocalDateTime.now())
                 .build();
+
         Question save = questionRepository.save(q);
         return save.getId();
     }
 
-    private static Member getAuthentication() {
+  /*  private static Member getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomMemberDetails findMember = (CustomMemberDetails) authentication.getPrincipal();//사용자 확인
         Member member = findMember.getMember();
         return member;
-    }
+    }*/
 
     public Optional<Question> findOne(long questionId) {
         return questionRepository.findById(questionId);
@@ -58,7 +56,7 @@ public class QuestionService {
         return writer;
     }
 
-    public QuestionResponseDTO findQuestion(long questionId) {
+    public QuestionResponseDTO getDetails(long questionId) {
         Optional<Question> q = findOne(questionId);
         if (q.isEmpty()) return null;
         return QuestionResponseDTO.toQuestionResponseDTO(q.get());
@@ -96,5 +94,11 @@ public class QuestionService {
     public int getTotalPage(Pageable page) {
         Page<Question> questions = findAllPage(page);
         return questions.getTotalPages();
+    }
+
+    @Transactional
+    public void adopt(long questionId) {
+        Question question = findOne(questionId).get();
+        question.adoptQuestion();
     }
 }

@@ -7,29 +7,40 @@ import lombok.Setter;
 import sogong.ctf.domain.Question;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Getter
 @Setter
-@Builder
 public class QuestionResponseDTO {
+    long challengeId;
     String title;
     String content;
     String writer;
-    LocalDateTime write_time;
+    Boolean isAdopted;
+    LocalDateTime writeTime;
+    List<CommentResponseDTO> commentList;
 
-    public QuestionResponseDTO(String title, String content, String writer, LocalDateTime write_time) {
+    @Builder
+    public QuestionResponseDTO(long challengeId, String title, String content, String writer, Boolean isAdopted, LocalDateTime writeTime) {
+        this.challengeId = challengeId;
         this.title = title;
         this.content = content;
         this.writer = writer;
-        this.write_time = write_time;
+        this.isAdopted = isAdopted;
+        this.writeTime = writeTime;
+        this.commentList = new ArrayList<>();
     }
 
-    public static QuestionResponseDTO toQuestionResponseDTO(Question q){
+    public static QuestionResponseDTO toQuestionResponseDTO(Question q) {
         return QuestionResponseDTO.builder()
+                .challengeId(q.getChallengeId().getId())
                 .title(q.getTitle())
                 .content(q.getContent())
                 .writer(q.getMemberId().getNickname())
-                .write_time(q.getWriteTime())
+                .isAdopted(q.getIsAdopted())
+                .writeTime(q.getWriteTime())
                 .build();
     }
 }
