@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sogong.ctf.domain.Member;
-import sogong.ctf.domain.Role;
+
 
 @Data
 @Builder

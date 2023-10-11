@@ -18,28 +18,29 @@ public class QuestionResponseDTO {
     String title;
     String content;
     String writer;
-    Boolean isAdopted;
+    long commentId;
     LocalDateTime writeTime;
     List<CommentResponseDTO> commentList;
 
     @Builder
-    public QuestionResponseDTO(long challengeId, String title, String content, String writer, Boolean isAdopted, LocalDateTime writeTime) {
+    public QuestionResponseDTO(long challengeId, String title, String content, String writer, long commentId, LocalDateTime writeTime) {
         this.challengeId = challengeId;
         this.title = title;
         this.content = content;
         this.writer = writer;
-        this.isAdopted = isAdopted;
+        this.commentId=commentId;
         this.writeTime = writeTime;
         this.commentList = new ArrayList<>();
     }
 
     public static QuestionResponseDTO toQuestionResponseDTO(Question q) {
+        long commentId = (q.getAdoptedComment()!=null)? q.getAdoptedComment().getId():-1;
         return QuestionResponseDTO.builder()
                 .challengeId(q.getChallengeId().getId())
                 .title(q.getTitle())
                 .content(q.getContent())
                 .writer(q.getMemberId().getNickname())
-                .isAdopted(q.getIsAdopted())
+                .commentId(commentId)
                 .writeTime(q.getWriteTime())
                 .build();
     }

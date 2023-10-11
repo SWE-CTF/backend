@@ -96,9 +96,4 @@ public class QuestionService {
         return questions.getTotalPages();
     }
 
-    @Transactional
-    public void adopt(long questionId) {
-        Question question = findOne(questionId).get();
-        question.adoptQuestion();
-    }
 }
