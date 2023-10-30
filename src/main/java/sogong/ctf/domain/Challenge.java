@@ -35,4 +35,8 @@ public class Challenge {
         this.memory = memory;
         this.time = time;
     }
+
+    public void addAttempt(Attempt attempt){
+        this.attempts.add(attempt);
+    }
 }

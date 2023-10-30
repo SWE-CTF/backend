@@ -1,7 +1,6 @@
 package sogong.ctf.domain;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,18 +12,10 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category {
+public class Notice {
 
     @Id
     @GeneratedValue
-    @Column(name = "category_id")
+    @Column(name = "Notice_id")
     private Long id;
-
-    private String name;
-
-    @Builder
-    public Category(String name) {
-        this.name = name;
-    }
-
 }

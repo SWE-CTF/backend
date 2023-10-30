@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum CodeStatus {
-    READY,SUCCESS,FAIL,ERROR
+    READY,SUCCESS,FAIL,ERROR,MEMORY,TIME
 }
