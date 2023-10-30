@@ -3,6 +3,8 @@ package sogong.ctf.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,17 +20,13 @@ public class Challenge {
     private float memory;
     private float time;
     private String examiner;//출제자
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category categoryId;
 
-    /*@ManyToMany
-    @JoinTable(
-            name = "category",
-            joinColumns = @JoinColumn(name = "challenge_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private List<Category> categories = new ArrayList<>();*/
+    @OneToMany(mappedBy = "challengeID")
+    private List<Attempt> attempts = new ArrayList<>();
 
     @Builder
     public Challenge(String title, String content,float memory, float time){
@@ -37,8 +35,4 @@ public class Challenge {
         this.memory = memory;
         this.time = time;
     }
-
-    /*public void addCategory(Category category){
-        this.categories.add(category);
-    }*/
 }
