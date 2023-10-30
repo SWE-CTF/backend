@@ -21,9 +21,6 @@ public class Category {
     private Long id;
     private String name;
 
-    /* @ManyToMany(mappedBy = "categories")
-     private List<Challenge> challenges = new ArrayList<>();
- */
     @Builder
     public Category(String name) {
         this.name = name;
