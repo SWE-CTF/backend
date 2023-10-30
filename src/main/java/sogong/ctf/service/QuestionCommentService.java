@@ -23,7 +23,7 @@ public class QuestionCommentService {
     @Transactional
     public long save(Member member, long questionId, String content) {
 
-        Optional<Question> question = questionService.findOne(questionId);
+        Optional<Question> question = questionService.findByQuestionId(questionId);
 
         if (question.isEmpty()) {
             throw new IllegalArgumentException();
@@ -38,8 +38,9 @@ public class QuestionCommentService {
 
         return save.getId();
     }
-    public List<CommentResponseDTO> getComments(long questionId){
-        Question question = questionService.findOne(questionId).get();
+
+    public List<CommentResponseDTO> getComments(long questionId) {
+        Question question = questionService.findByQuestionId(questionId).get();
         List<Comment> commentList = commentRepository.findAllByQuestionId(question);
         List<CommentResponseDTO> dtoList = new ArrayList<>();
         for (Comment comment : commentList) {
@@ -48,28 +49,29 @@ public class QuestionCommentService {
         return dtoList;
     }
 
-    public Comment findOne(long commentId){
+    private Comment findByCommentId(long commentId) {
         return commentRepository.findById(commentId).get();
     }
+
     public Member findWriter(long commentId) {
-        return findOne(commentId).getWriter();
+        return findByCommentId(commentId).getWriter();
     }
 
     @Transactional
     public void update(long commentId, String content) {
-        Comment comment = findOne(commentId);
+        Comment comment = findByCommentId(commentId);
         comment.updateComment(content);
     }
 
     @Transactional
     public void delete(long commentId) {
-        Comment comment = findOne(commentId);
+        Comment comment = findByCommentId(commentId);
         commentRepository.delete(comment);
     }
 
     @Transactional
     public void adopt(long commentId) {
-        Comment comment = findOne(commentId);
+        Comment comment = findByCommentId(commentId);
         comment.getQuestionId().adopt(comment);
     }
 }
