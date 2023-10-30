@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import sogong.ctf.dto.MemberResponseDTO;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "memberID")
+    @OneToMany(mappedBy = "memberId")
     private List<Attempt> attempts = new ArrayList<>();
 
     @Builder
@@ -54,5 +55,21 @@ public class Member {
     }
 
     public void addAttempt(Attempt attempt){this.attempts.add(attempt);}
+
+    public void addCount(){
+        this.count += 1;
+    }
+
+    public void updateData(MemberResponseDTO memberResponseDTO){
+        this.username = memberResponseDTO.getUsername();
+        this.name = memberResponseDTO.getName();
+        this.email = memberResponseDTO.getEmail();
+        this.nickname = memberResponseDTO.getNickname();
+        this.team = memberResponseDTO.getTeam();
+    }
+
+    public void updatePW(String password){
+        this.password = password;
+    }
 
 }

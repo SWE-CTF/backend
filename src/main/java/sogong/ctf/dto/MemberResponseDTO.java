@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sogong.ctf.domain.Team;
 
 @Data
 @Builder
@@ -14,5 +15,5 @@ public class MemberResponseDTO {
     private String name;
     private String email;
     private String nickname;
-    private TokenDTO token;
+    private Team team;
 }

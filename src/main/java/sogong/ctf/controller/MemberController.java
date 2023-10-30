@@ -1,16 +1,20 @@
 package sogong.ctf.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.session.RedisSessionProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sogong.ctf.domain.Member;
+import sogong.ctf.dto.MemberPasswordDTO;
 import sogong.ctf.dto.MemberRequestDTO;
+import sogong.ctf.dto.MemberResponseDTO;
 import sogong.ctf.dto.TeamFormDTO;
+import sogong.ctf.service.AuthUser;
 import sogong.ctf.service.MemberService;
 import sogong.ctf.service.TeamService;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.ValidationException;
-import java.security.NoSuchProviderException;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,10 +31,9 @@ public class MemberController {
     @PostMapping("/api/admin/team") //url 미정 , 소속 추가 기능
     public ResponseEntity create(@RequestBody TeamFormDTO teamFormDTO){
         try{
-            teamService.createTeam(teamFormDTO);
-            return ResponseEntity.status(HttpStatus.OK).body("success");
+            return new ResponseEntity(teamService.createTeam(teamFormDTO),HttpStatus.OK);
         } catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -58,10 +61,54 @@ public class MemberController {
             return new ResponseEntity(memberService.logout(httpServletRequest),HttpStatus.OK);
         } catch(ValidationException e){
             return ResponseEntity.status(401).build();
-        } catch(NoSuchProviderException e){
-            return ResponseEntity.status(400).build();
-        } catch(Exception e){
+        }catch(Exception e){
             return ResponseEntity.status(400).build();
         }
     }
+
+    @GetMapping("/api/member/rank")
+    public ResponseEntity showRank(){
+        try{
+            return new ResponseEntity(memberService.rank(),HttpStatus.OK);
+        }catch(Exception e){
+            return ResponseEntity.status(400).build();
+        }
+    }
+
+    @GetMapping("/api/member/profile")
+    public ResponseEntity getProfile(@AuthUser Member member){
+        try{
+            return new ResponseEntity(memberService.showProfile(member),HttpStatus.OK);
+        }catch(Exception e){
+            return ResponseEntity.status(400).build();
+        }
+    }
+
+    @PostMapping("/api/member/profile")
+    public ResponseEntity postProfile(@RequestBody MemberResponseDTO memberResponseDTO, @AuthUser Member member){
+        try{
+            return new ResponseEntity(memberService.postProfile(memberResponseDTO, member),HttpStatus.OK);
+        }catch(Exception e){
+            return ResponseEntity.status(400).build();
+        }
+    }
+
+    @GetMapping("/api/member/profile/password")
+    public ResponseEntity checkPassword(@RequestBody MemberPasswordDTO memberPasswordDTO, @AuthUser Member member){
+        try{
+            return new ResponseEntity(memberService.checkPassword(memberPasswordDTO,member),HttpStatus.OK);
+        }catch(Exception e){
+            return ResponseEntity.status(400).build();
+        }
+    }
+
+    @PostMapping("/api/member/profile/password")
+    public ResponseEntity updatePassword(@RequestBody MemberPasswordDTO memberPasswordDTO, @AuthUser Member member){
+        try{
+            return new ResponseEntity(memberService.updatePassword(memberPasswordDTO, member),HttpStatus.OK);
+        }catch(Exception e){
+            return ResponseEntity.status(400).build();
+        }
+    }
+
 }
