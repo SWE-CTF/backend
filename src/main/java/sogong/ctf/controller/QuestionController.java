@@ -46,7 +46,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{questionId}") //질문 게시글 상세조회
-    public ResponseEntity<QuestionResponseDTO> getQuestion(@PathVariable("questionId") long questionId) {
+    public ResponseEntity<QuestionResponseDTO> getQuestion(@PathVariable("questionId") int questionId) {
         QuestionResponseDTO question = questionService.getDetails(questionId);
         if (question != null) {
             List<CommentResponseDTO> commentList = commentService.getComments(questionId);
@@ -58,7 +58,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{questionId}")
-    public ResponseEntity deleteQuestion(@PathVariable("questionId") long questionId, @AuthUser Member member) {
+    public ResponseEntity deleteQuestion(@PathVariable("questionId") int questionId, @AuthUser Member member) {
         Member writer = questionService.findWriter(questionId);
         if (memberService.IsEquals(member, writer)) {//글 작성자와 지우려고 하는 사람 일치 여부 확인
             questionService.delete(questionId);
@@ -69,7 +69,7 @@ public class QuestionController {
     }
 
     @PutMapping("/{questionId}")
-    public ResponseEntity updateQuestion(@PathVariable("questionId") long questionId, @RequestBody QuestionSaveDTO questionSaveDTO, @AuthUser Member member) {
+    public ResponseEntity updateQuestion(@PathVariable("questionId") int questionId, @RequestBody QuestionSaveDTO questionSaveDTO, @AuthUser Member member) {
         Member writer = questionService.findWriter(questionId);
         if (memberService.IsEquals(member, writer)) {
             questionService.update(questionId, questionSaveDTO);
