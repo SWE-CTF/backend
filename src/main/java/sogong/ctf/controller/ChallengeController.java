@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Member;
 import sogong.ctf.dto.CategoryListDTO;
+import sogong.ctf.dto.ChallengeListDTO;
 import sogong.ctf.dto.ChallengePagingDTO;
 import sogong.ctf.dto.ChallengeSaveDTO;
 import sogong.ctf.service.AuthUser;
@@ -50,4 +48,15 @@ public class ChallengeController {
         List<CategoryListDTO> categoryList = categoryService.getCategoryList();
         return ResponseEntity.ok(categoryList);
     }
+
+    @GetMapping("search")
+    public ResponseEntity<List<ChallengeListDTO>> search(@PathVariable(name = "keyword") String keyword) {
+        try {
+            List<ChallengeListDTO> searchResult = challengeService.search(keyword);
+            return ResponseEntity.ok(searchResult);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 }

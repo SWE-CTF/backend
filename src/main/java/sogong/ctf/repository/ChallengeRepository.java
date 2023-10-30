@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     public List<Challenge> findAllByCategoryId(Category category);
+
+    public List<Challenge> findAllByTitleContaining(String keyword);
 }
