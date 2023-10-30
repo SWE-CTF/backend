@@ -40,37 +40,30 @@ public class QuestionService {
         return save.getId();
     }
 
-  /*  private static Member getAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomMemberDetails findMember = (CustomMemberDetails) authentication.getPrincipal();//사용자 확인
-        Member member = findMember.getMember();
-        return member;
-    }*/
-
-    public Optional<Question> findOne(long questionId) {
+    public Optional<Question> findByQuestionId(long questionId) {
         return questionRepository.findById(questionId);
     }
 
     public Member findWriter(long questionId) {
-        Member writer = findOne(questionId).get().getMemberId();
+        Member writer = findByQuestionId(questionId).get().getMemberId();
         return writer;
     }
 
     public QuestionResponseDTO getDetails(long questionId) {
-        Optional<Question> q = findOne(questionId);
+        Optional<Question> q = findByQuestionId(questionId);
         if (q.isEmpty()) return null;
         return QuestionResponseDTO.toQuestionResponseDTO(q.get());
     }
 
     @Transactional
     public void delete(long questionId) {
-        Question q = findOne(questionId).get();
+        Question q = findByQuestionId(questionId).get();
         questionRepository.delete(q);
     }
 
     @Transactional
     public void update(long questionId, QuestionSaveDTO questionSaveDTO) {
-        Question q = findOne(questionId).orElseThrow(() -> new NoSuchElementException());
+        Question q = findByQuestionId(questionId).orElseThrow(() -> new NoSuchElementException());
         q.updateQuestion(questionSaveDTO.getTitle(), questionSaveDTO.getContent());
     }
 

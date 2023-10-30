@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Member;
-import sogong.ctf.dto.QuestionCommentDTO;
+import sogong.ctf.dto.QuestionCommentSaveDTO;
 import sogong.ctf.service.MemberService;
 import sogong.ctf.service.QuestionCommentService;
 
@@ -16,13 +16,13 @@ public class QuestionCommentController {
     private final MemberService memberService;
 
     @PostMapping("/{questionId}/save")
-    public ResponseEntity save(@PathVariable("questionId") long questionId, @RequestBody QuestionCommentDTO request, Member member) {
+    public ResponseEntity saveComment(@PathVariable("questionId") long questionId, @RequestBody QuestionCommentSaveDTO request, Member member) {
         commentService.save(member, questionId, request.getContent());
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity updateComment(@PathVariable("commentId") long commentId, @RequestBody QuestionCommentDTO request, Member member) {
+    public ResponseEntity updateComment(@PathVariable("commentId") long commentId, @RequestBody QuestionCommentSaveDTO request, Member member) {
         Member writer = commentService.findWriter(commentId);
         if (memberService.IsEquals(member, writer)) {
             commentService.update(commentId, request.getContent());
@@ -33,7 +33,7 @@ public class QuestionCommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity deleteComment(@PathVariable("commentId") long commentId, @RequestBody QuestionCommentDTO request, Member member) {
+    public ResponseEntity deleteComment(@PathVariable("commentId") long commentId, Member member) {
         Member writer = commentService.findWriter(commentId);
         if (memberService.IsEquals(member, writer)) {
             commentService.delete(commentId);

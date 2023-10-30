@@ -30,7 +30,7 @@ public class QuestionController {
     private final MemberService memberService;
 
     @PostMapping("/save")//질문 게시글 작성
-    public ResponseEntity save(@RequestBody QuestionSaveDTO saveForm, @AuthUser Member member) {//질문 작성
+    public ResponseEntity saveQuestion(@RequestBody QuestionSaveDTO saveForm, @AuthUser Member member) {//질문 작성
         Optional<Challenge> findChallenge = challengeService.findByChallengeId(saveForm.getChallengeId());//문제 번호 확인
         if (findChallenge.isEmpty())
             return ResponseEntity.status(404).build();//해당 문제 번호 없을 경우
@@ -81,13 +81,11 @@ public class QuestionController {
 
     @GetMapping("/paging")
     public ResponseEntity<Map<String, Object>> paging(@PageableDefault(page = 1) Pageable page) {
-        int totalPage = questionService.getTotalPage(page);
         List<QuestionPagingDTO> paging = questionService.paging(page);
         if (paging.size() == 0) {
             return ResponseEntity.status(404).build();
         }
         Map<String, Object> response = new HashMap<>();
-        response.put("pagination", totalPage);
         response.put("paging", paging);
         return ResponseEntity.ok(response);
     }
