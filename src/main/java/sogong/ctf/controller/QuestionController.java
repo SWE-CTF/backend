@@ -33,7 +33,7 @@ public class QuestionController {
     public ResponseEntity saveQuestion(@RequestBody QuestionSaveDTO saveForm, @AuthUser Member member) {//질문 작성
         Optional<Challenge> findChallenge = challengeService.findByChallengeId(saveForm.getChallengeId());//문제 번호 확인
         if (findChallenge.isEmpty())
-            return ResponseEntity.status(404).build();//해당 문제 번호 없을 경우
+            return ResponseEntity.notFound().build();//해당 문제 번호 없을 경우
         else if (member.getId() == null) {//인증된 사용자 아닐 경우
             return ResponseEntity.status(403).build();
         }
@@ -41,7 +41,7 @@ public class QuestionController {
             questionService.save(member, saveForm, findChallenge.get());//질문 저장
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
