@@ -17,10 +17,6 @@ public class Question extends Post {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member memberId;
-
-    @ManyToOne
     @JoinColumn(name = "challenge_id")
     private Challenge challengeId;
 
@@ -30,16 +26,14 @@ public class Question extends Post {
 
     @Builder
     public Question(String title, String content, Challenge challengeId, Member memberId, LocalDateTime writeTime) {
-        super(title, content, writeTime);
+        super(title, content, writeTime, memberId);
         this.challengeId = challengeId;
-        this.memberId = memberId;
         this.adoptedComment = null;
     }
 
-
     public void updateQuestion(String title, String content) {
-        setTitle(title);
-        setContent(content);
+        updateTitle(title);
+        updateContent(content);
     }
 
     public void adopt(Comment comment) {

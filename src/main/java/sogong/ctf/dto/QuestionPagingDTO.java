@@ -26,13 +26,13 @@ public class QuestionPagingDTO {
     }
 
     public static QuestionPagingDTO toDTO(Question question) {
-
         QuestionPagingDTO dto = QuestionPagingDTO.builder()
                 .questionId(question.getId())
                 .title(question.getTitle())
                 .nickname(question.getMemberId().getNickname())
                 .writeTime(question.getWriteTime())
                 .build();
+
         return dto;
     }
 

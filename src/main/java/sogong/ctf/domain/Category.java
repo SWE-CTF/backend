@@ -19,7 +19,6 @@ public class Category {
     @GeneratedValue
     @Column(name = "category_id")
     private Long id;
-
     private String name;
 
     /* @ManyToMany(mappedBy = "categories")
