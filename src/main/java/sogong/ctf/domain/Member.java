@@ -36,7 +36,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "memberID")
+    @OneToMany(mappedBy = "memberId")
     private List<Attempt> attempts = new ArrayList<>();
 
     @Builder

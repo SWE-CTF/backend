@@ -17,7 +17,7 @@ public class Attempt {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member memberID;
+    private Member memberId;
 
     private String code;
     private float memory;
@@ -28,6 +28,6 @@ public class Attempt {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id")
-    private Challenge challengeID;
+    private Challenge challengeId;
 
 }

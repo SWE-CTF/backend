@@ -25,7 +25,7 @@ public class Challenge {
     @JoinColumn(name = "category_id")
     private Category categoryId;
 
-    @OneToMany(mappedBy = "challengeID")
+    @OneToMany(mappedBy = "challengeId")
     private List<Attempt> attempts = new ArrayList<>();
 
     @Builder
