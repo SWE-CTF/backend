@@ -14,7 +14,7 @@ public class Notice extends Post {
     @Id
     @GeneratedValue
     @Column(name = "notice_id")
-    private long id;
+    private Long id;
 
     private int readCnt;
 
