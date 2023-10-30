@@ -4,9 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sogong.ctf.domain.Member;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 public class CustomMemberDetails implements UserDetails {
@@ -17,20 +15,17 @@ public class CustomMemberDetails implements UserDetails {
         this.member = member;
     }
 
-    public Member getMember() {
-        return member;
+    public Member getMember(){
+        return this.member;
     }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         Collection<GrantedAuthority> authorities = new ArrayList<>();
 
         authorities.add(new SimpleGrantedAuthority(member.getRole().toString()));
 
         return authorities;
     }
-
     @Override
     public String getPassword() {
         return member.getPassword();
