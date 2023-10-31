@@ -39,17 +39,17 @@ public class ChallengeService {
     }
 
     public long save(ChallengeSaveDTO saveForm, Member member) {
-        if (saveForm.getFiles() != null) {
-            challengeFileService.save(saveForm.getFiles());
-        }
         Challenge c = Challenge.builder()
                 .title(saveForm.getTitle())
                 .content(saveForm.getContent())
                 .time(saveForm.getTime())
                 .memory(saveForm.getMemory())
+                .examiner(member)
                 .build();
-
         Challenge save = challengeRepository.save(c);
+        if (saveForm.getFiles() != null) {
+            challengeFileService.save(saveForm.getFiles(),save);
+        }
         return save.getId();
     }
 

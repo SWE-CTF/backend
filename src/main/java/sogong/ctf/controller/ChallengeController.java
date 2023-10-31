@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sogong.ctf.domain.Member;
 import sogong.ctf.dto.CategoryListDTO;
 import sogong.ctf.dto.ChallengeListDTO;
@@ -34,7 +35,9 @@ public class ChallengeController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity saveChallenge(ChallengeSaveDTO saveForm, @AuthUser Member member) {
+    public ResponseEntity saveChallenge(@RequestPart("saveForm") ChallengeSaveDTO saveForm,
+                                        @RequestPart("files") List<MultipartFile> files, @AuthUser Member member) {
+        saveForm.setFiles(files);
         Long save = challengeService.save(saveForm, member);
         if (save != null) {
             return ResponseEntity.ok().build();
