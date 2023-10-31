@@ -31,7 +31,7 @@ public class AttemptController {
     @GetMapping("/api/attempt/member")
     public ResponseEntity getAttempts(@AuthUser Member member){
         try{
-            return new ResponseEntity(attemptService.getMemberAttempt(member),HttpStatus.OK);
+            return ResponseEntity.ok(attemptService.getMemberAttempt(member));
         }catch(Exception e){
             return ResponseEntity.status(400).build();
         }

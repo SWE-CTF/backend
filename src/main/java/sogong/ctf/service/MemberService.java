@@ -70,21 +70,9 @@ public class MemberService {
     }
 
 
-    public Boolean logout(HttpServletRequest httpServletRequest) throws Exception {
+    public Boolean logout(Member member) throws Exception {
 
-        String token = jwtProvider.resolveToken(httpServletRequest);
-
-        TokenDTO tokenDTO = TokenDTO.builder()
-                .token(token)
-                .build();
-
-        if (!jwtProvider.validateToken(tokenDTO.getToken().toString()))
-            throw new ValidationException("Validation Out");
-
-        tokenDTO.setToken(token.substring(7));
-
-        String username = jwtProvider.getUsername(tokenDTO.getToken().toString());
-        Optional<Member> find_member = memberRepository.findByUsername(username);
+        Optional<Member> find_member = memberRepository.findByUsername(member.getUsername());
 
         if (find_member.isEmpty())
             throw new NoSuchProviderException("No user");

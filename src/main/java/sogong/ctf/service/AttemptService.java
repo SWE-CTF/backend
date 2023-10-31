@@ -56,11 +56,12 @@ public class AttemptService {
     @Transactional
     @Async
     public void compileAndRun(CodeRequestDTO codeRequestDTO, Member member) {
+
         /*
         Long attemptId = saveAttempt(codeRequestDTO, member); //attempt 초기 저장
         Optional<Challenge> challenge = challengeRepository.findById(codeRequestDTO.getChallengeID());
 
-        List<TestCase> testCaseList = testCaseRepository.findAllByChallenge(challenge.get());
+        List<TestCase> testCaseList = challenge.get().getTestCaseList();
         List<CodeStatus> codeStatusList = new ArrayList<>();
 
         DockerClient dockerClient = DockerClientBuilder.getInstance().build();
@@ -109,11 +110,9 @@ public class AttemptService {
             //확인해보고는 상태 선정
 
         }
-        //attempt.get().updateStatus();
+        attempt.get().updateStatus();
         challenge.get().addAttempt(attempt.get()); //해당 문제에 시도이력 추가
         member.addAttempt(attempt.get()); //해당 사용자에게 시도이력 추가
-
-        //레포지토리 수정
 
          */
     }

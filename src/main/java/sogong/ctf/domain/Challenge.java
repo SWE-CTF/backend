@@ -28,6 +28,9 @@ public class Challenge {
     @OneToMany(mappedBy = "challengeId")
     private List<Attempt> attempts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "challengeId")
+    private List<TestCase> testCaseList = new ArrayList<>();
+
     @Builder
     public Challenge(String title, String content,float memory, float time){
         this.title = title;
