@@ -30,7 +30,7 @@ public class TeamService {
     }
 
     public List<String> findAllTeam(){
-        return teamRepository.findAllOnlyName();
+        return teamRepository.findAllByOnlyName();
     }
 
     private void validateDuplicateTeam(TeamFormDTO teamFormDTO){
