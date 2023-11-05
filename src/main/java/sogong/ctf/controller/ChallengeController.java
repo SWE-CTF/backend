@@ -29,7 +29,7 @@ public class ChallengeController {
     @GetMapping("/paging")
     public ResponseEntity<List<ChallengePagingDTO>> paging(@PageableDefault(page = 1) Pageable page) {
         List<ChallengePagingDTO> paging = challengeService.paging(page);
-        if (paging != null) {
+        if (paging.size() !=0) {
             return ResponseEntity.ok(paging);
         } else return ResponseEntity.notFound().build();
     }

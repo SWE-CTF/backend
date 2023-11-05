@@ -11,12 +11,12 @@ import java.util.List;
 @RequiredArgsConstructor
 
 public class ChallengeSaveDTO {
-    String title;
-    String content;
-    float time;
-    float memory;
-    List<MultipartFile> files;
-    String hint;
+    private String title;
+    private String content;
+    private float time;
+    private float memory;
+    private List<MultipartFile> files;
+    private String hint;
 
     @Builder
     public ChallengeSaveDTO(String title, String content, float time, float memory, List<MultipartFile> files, String hint) {
