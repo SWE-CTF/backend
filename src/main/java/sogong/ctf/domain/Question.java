@@ -18,7 +18,6 @@ public class Question extends Post {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "challenge_id")
-    //@OnDelete(action =OnDeleteAction.CASCADE)
     private Challenge challengeId;
 
     @OneToOne
