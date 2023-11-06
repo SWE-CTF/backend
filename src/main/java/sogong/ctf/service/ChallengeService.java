@@ -61,4 +61,8 @@ public class ChallengeService {
         }
         return list;
     }
+    public void deleteChallenge(long challengeId){
+        Challenge challenge = findByChallengeId(challengeId).get();
+        challengeRepository.delete(challenge);
+    }
 }

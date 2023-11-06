@@ -61,5 +61,16 @@ public class ChallengeController {
             return ResponseEntity.internalServerError().build();
         }
     }
+    @DeleteMapping("/{challengeId}")
+    public ResponseEntity deleteChallenge(@PathVariable("challengeId")int challengeId){
+
+        try {
+            challengeService.deleteChallenge(challengeId);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            System.out.println(e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
 }
