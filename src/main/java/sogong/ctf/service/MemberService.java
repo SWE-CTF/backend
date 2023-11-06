@@ -99,4 +99,7 @@ public class MemberService {
     public boolean IsEquals(Member member,Member writer){
         return member.getId().equals(writer.getId());
     }
+    public Member findMemberById(long id){
+        return memberRepository.findById(id).get();
+    }
 }

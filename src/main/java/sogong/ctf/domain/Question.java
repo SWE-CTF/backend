@@ -3,8 +3,6 @@ package sogong.ctf.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,7 +18,7 @@ public class Question extends Post {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "challenge_id")
-    @OnDelete(action =OnDeleteAction.CASCADE)
+    //@OnDelete(action =OnDeleteAction.CASCADE)
     private Challenge challengeId;
 
     @OneToOne
