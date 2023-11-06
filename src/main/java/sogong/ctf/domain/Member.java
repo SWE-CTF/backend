@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ public class Member {
     private String email;
     private String nickname;
 
+    @ColumnDefault("0")
+    private int count;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
@@ -32,7 +36,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "memberID")
+    @OneToMany(mappedBy = "memberId")
     private List<Attempt> attempts = new ArrayList<>();
 
     @Builder
@@ -48,5 +52,7 @@ public class Member {
     public void joinTeam(Team team){
         this.team = team;
     }
+
+    public void addAttempt(Attempt attempt){this.attempts.add(attempt);}
 
 }

@@ -89,4 +89,12 @@ public class QuestionService {
         return questions.getTotalPages();
     }
 
+    public List<QuestionPagingDTO> getAllQuestion() {
+        List<Question> all = questionRepository.findAll();
+        List<QuestionPagingDTO> list = new ArrayList<>();
+        for (Question question : all) {
+            list.add(QuestionPagingDTO.toDTO(question));
+        }
+        return list;
+    }
 }

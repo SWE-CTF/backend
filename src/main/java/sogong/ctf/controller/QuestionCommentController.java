@@ -17,7 +17,10 @@ public class QuestionCommentController {
 
     @PostMapping("/{questionId}/save")
     public ResponseEntity saveComment(@PathVariable("questionId") long questionId, @RequestBody QuestionCommentSaveDTO request, Member member) {
-        commentService.save(member, questionId, request.getContent());
+        try{commentService.save(member, questionId, request.getContent());}
+        catch (Exception e){
+            System.out.println(e);
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -45,6 +48,7 @@ public class QuestionCommentController {
 
     @PostMapping("/{commentId}/adopt")
     public ResponseEntity adoptComment(@PathVariable("commentId") long commentId) {
+
         commentService.adopt(commentId);
         return ResponseEntity.status(200).build();
     }
