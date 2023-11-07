@@ -17,11 +17,13 @@ public class QuestionCommentController {
 
     @PostMapping("/{questionId}/save")
     public ResponseEntity saveComment(@PathVariable("questionId") long questionId, @RequestBody QuestionCommentSaveDTO request, Member member) {
-        try{commentService.save(member, questionId, request.getContent());}
-        catch (Exception e){
+        try {
+            commentService.save(member, questionId, request.getContent());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
             System.out.println(e);
+            return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{commentId}")
