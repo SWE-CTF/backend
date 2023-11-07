@@ -3,6 +3,6 @@ package sogong.ctf.dto;
 import lombok.Builder;
 
 @Builder
-public class ChallengeListDTO {
+public class ChallengeSearchDTO {
     private String title;
 }

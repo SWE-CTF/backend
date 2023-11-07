@@ -8,13 +8,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
-import sogong.ctf.dto.ChallengeListDTO;
+import sogong.ctf.dto.ChallengeSearchDTO;
 import sogong.ctf.dto.ChallengePagingDTO;
+import sogong.ctf.dto.ChallengeResponseDTO;
 import sogong.ctf.dto.ChallengeSaveDTO;
 import sogong.ctf.repository.ChallengeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -53,12 +55,29 @@ public class ChallengeService {
         return save.getId();
     }
 
-    public List<ChallengeListDTO> search(String keyword) {
+    public List<ChallengeSearchDTO> search(String keyword) {
         List<Challenge> searchResult = challengeRepository.findAllByTitleContaining(keyword);
-        List<ChallengeListDTO> list = new ArrayList<>();
+        List<ChallengeSearchDTO> list = new ArrayList<>();
         for (Challenge challenge : searchResult) {
-            list.add(ChallengeListDTO.builder().title(challenge.getTitle()).build());
+            list.add(ChallengeSearchDTO.builder().title(challenge.getTitle()).build());
         }
         return list;
+    }
+
+    public ChallengeResponseDTO getDetails(long challengeId) {
+        Optional<Challenge> findChallenge = challengeRepository.findById(challengeId);
+        if(findChallenge.isEmpty()){
+            throw new NoSuchElementException();
+        }else{
+            return ChallengeResponseDTO.toDTO(findChallenge.get());
+        }
+    }
+    public void deleteChallenge(long challengeId){
+        Challenge challenge = findByChallengeId(challengeId).get();
+        challengeRepository.delete(challenge);
+    }
+    public long findExaminer(long challengeId){
+        Challenge challenge = findByChallengeId(challengeId).get();
+        return challenge.getExaminer().getId();
     }
 }
