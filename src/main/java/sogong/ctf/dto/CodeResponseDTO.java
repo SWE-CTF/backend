@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CodeResponseDTO {
-    String language;
-    String code;
-    float memory;
-    float time;
+    private String language;
+    private String code;
+    private float memory;
+    private float time;
 }

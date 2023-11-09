@@ -30,7 +30,7 @@ public class AttemptService {
 
     private final AttemptRepository attemptRepository;
     private final ChallengeRepository challengeRepository;
-    private final TestCaseRepository testCaseRepository;
+
     public List<Attempt> getChallengeAttempt(Long id) {
         Optional<Challenge> challenge = challengeRepository.findById(id);
         return challenge.get().getAttempts();
@@ -113,8 +113,7 @@ public class AttemptService {
         attempt.get().updateStatus();
         challenge.get().addAttempt(attempt.get()); //해당 문제에 시도이력 추가
         member.addAttempt(attempt.get()); //해당 사용자에게 시도이력 추가
-
-         */
+*/
     }
 
     private String getDockerImage(String language) {

@@ -37,4 +37,15 @@ public class AttemptController {
         }
     }
 
+    @GetMapping("/api/attempt/challenge")
+    public ResponseEntity getChallengeAttempts(){
+        //challenge id 받아오기
+        Long id = (long) 0.0; // 나중에 고칠거
+        try{
+            return ResponseEntity.ok(attemptService.getChallengeAttempt(id));
+        }catch(Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

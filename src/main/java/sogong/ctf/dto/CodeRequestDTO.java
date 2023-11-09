@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CodeRequestDTO {
-    String language;
-    String code;
-    Long challengeID;
+    private String language;
+    private String code;
+    private Long challengeID;
 }
