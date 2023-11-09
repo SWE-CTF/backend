@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sogong.ctf.domain.Member;
 import sogong.ctf.dto.CategoryListDTO;
 import sogong.ctf.dto.ChallengeListDTO;
@@ -33,13 +34,15 @@ public class ChallengeController {
     @GetMapping("/paging")
     public ResponseEntity<List<ChallengePagingDTO>> paging(@PageableDefault(page = 1) Pageable page) {
         List<ChallengePagingDTO> paging = challengeService.paging(page);
-        if (paging != null) {
+        if (paging.size() !=0) {
             return ResponseEntity.ok(paging);
         } else return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/save")
-    public ResponseEntity saveChallenge(ChallengeSaveDTO saveForm, @AuthUser Member member) {
+    public ResponseEntity saveChallenge(@RequestPart("saveForm") ChallengeSaveDTO saveForm,
+                                        @RequestPart("files") List<MultipartFile> files, @AuthUser Member member) {
+        saveForm.setFiles(files);
         Long save = challengeService.save(saveForm, member);
         if (save != null) {
             return ResponseEntity.ok().build();
@@ -60,6 +63,17 @@ public class ChallengeController {
             List<ChallengeListDTO> searchResult = challengeService.search(keyword);
             return ResponseEntity.ok(searchResult);
         } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    @DeleteMapping("/{challengeId}")
+    public ResponseEntity deleteChallenge(@PathVariable("challengeId")int challengeId){
+
+        try {
+            challengeService.deleteChallenge(challengeId);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            System.out.println(e);
             return ResponseEntity.internalServerError().build();
         }
     }

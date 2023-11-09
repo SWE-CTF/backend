@@ -39,17 +39,17 @@ public class ChallengeService {
     }
 
     public long save(ChallengeSaveDTO saveForm, Member member) {
-        if (saveForm.getFiles() != null) {
-            challengeFileService.save(saveForm.getFiles());
-        }
         Challenge c = Challenge.builder()
                 .title(saveForm.getTitle())
                 .content(saveForm.getContent())
                 .time(saveForm.getTime())
                 .memory(saveForm.getMemory())
+                .examiner(member)
                 .build();
-
         Challenge save = challengeRepository.save(c);
+        if (saveForm.getFiles() != null) {
+            challengeFileService.save(saveForm.getFiles(),save);
+        }
         return save.getId();
     }
 
@@ -60,5 +60,9 @@ public class ChallengeService {
             list.add(ChallengeListDTO.builder().title(challenge.getTitle()).build());
         }
         return list;
+    }
+    public void deleteChallenge(long challengeId){
+        Challenge challenge = findByChallengeId(challengeId).get();
+        challengeRepository.delete(challenge);
     }
 }

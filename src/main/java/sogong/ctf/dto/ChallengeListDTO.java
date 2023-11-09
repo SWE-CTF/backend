@@ -4,5 +4,5 @@ import lombok.Builder;
 
 @Builder
 public class ChallengeListDTO {
-    String title;
+    private String title;
 }

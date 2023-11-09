@@ -22,6 +22,7 @@ public class Comment {
     private Member writer;
     @ManyToOne
     @JoinColumn(name = "question_id")
+    //@OnDelete(action = OnDeleteAction.CASCADE)
     private Question questionId;
 
     @Builder

@@ -56,7 +56,7 @@ public class MemberService {
     }
 
 
-    public TokenDTO login(MemberRequestDTO request) throws BadCredentialsException {
+    public MemberResponseDTO login(MemberRequestDTO request) throws BadCredentialsException {
         Optional<Member> member = memberRepository.findByUsername(request.getUsername());
         if (member.isEmpty())
             throw new BadCredentialsException("username false");
@@ -64,8 +64,14 @@ public class MemberService {
         if (!passwordEncoder.matches(request.getPassword(), member.get().getPassword()))
             throw new BadCredentialsException("password false");
 
-        return TokenDTO.builder()
-                .token(jwtProvider.createToken(member.get().getUsername(),member.get().getRole()))
+        return MemberResponseDTO.builder()
+                .username(member.get().getUsername())
+                .name(member.get().getName())
+                .email(member.get().getEmail())
+                .nickname(member.get().getNickname())
+                .token(TokenDTO.builder()
+                        .token(jwtProvider.createToken(member.get().getUsername(), member.get().getRole())
+                        ).build())
                 .build();
     }
 
@@ -82,6 +88,9 @@ public class MemberService {
     }
     public boolean IsEquals(Member member,Member writer){
         return member.getId().equals(writer.getId());
+    }
+    public Member findMemberById(long id){
+        return memberRepository.findById(id).get();
     }
 
     @Transactional

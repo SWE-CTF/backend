@@ -8,6 +8,9 @@ import sogong.ctf.dto.QuestionCommentSaveDTO;
 import sogong.ctf.service.MemberService;
 import sogong.ctf.service.QuestionCommentService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/comment")
@@ -17,8 +20,15 @@ public class QuestionCommentController {
 
     @PostMapping("/{questionId}/save")
     public ResponseEntity saveComment(@PathVariable("questionId") long questionId, @RequestBody QuestionCommentSaveDTO request, Member member) {
-        commentService.save(member, questionId, request.getContent());
-        return ResponseEntity.ok().build();
+        try {
+            long save = commentService.save(member, questionId, request.getContent());
+            Map<String,Long> result = new HashMap<>();
+            result.put("commentId",save);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PutMapping("/{commentId}")
@@ -45,6 +55,7 @@ public class QuestionCommentController {
 
     @PostMapping("/{commentId}/adopt")
     public ResponseEntity adoptComment(@PathVariable("commentId") long commentId) {
+
         commentService.adopt(commentId);
         return ResponseEntity.status(200).build();
     }
