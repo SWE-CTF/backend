@@ -127,4 +127,21 @@ public class MemberService {
         member1.get().updatePW(passwordEncoder.encode(memberPasswordDTO.getPassword()));
         return true;
     }
+
+    @Transactional
+    public Long joinAdmin(MemberRequestDTO memberRequestDTO) {
+
+        memberRequestDTO.setPassword(passwordEncoder.encode(memberRequestDTO.getPassword()));
+
+        Member member = Member.builder()
+                .username(memberRequestDTO.getUsername())
+                .password(memberRequestDTO.getPassword())
+                .name(memberRequestDTO.getName())
+                .email(memberRequestDTO.getEmail())
+                .nickname(memberRequestDTO.getNickname())
+                .role(Role.ROLE_ADMIN)
+                .build();
+
+        return memberRepository.save(member).getId();
+    }
 }

@@ -1,6 +1,7 @@
 package sogong.ctf.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Member;
@@ -19,6 +20,16 @@ public class MemberController {
 
     private final MemberService memberService;
     private final TeamService teamService;
+
+    @GetMapping("/api/admin1") //삭제 예정
+    public ResponseEntity joinAdmin(@RequestBody MemberRequestDTO request){
+        try{
+            System.out.println("hh");
+            return ResponseEntity.ok(memberService.joinAdmin(request));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     @GetMapping("/api/member/join") //소속 가입할때 가능한 소속 보여주기 , url 미정
     public ResponseEntity joinForm(){
@@ -50,7 +61,7 @@ public class MemberController {
     @PostMapping("/api/member/join")
     public ResponseEntity join(@RequestBody MemberRequestDTO request){
         try{
-            return ResponseEntity.ok(memberService.join(request));
+            return new ResponseEntity(memberService.join(request), HttpStatus.OK);
         } catch(Exception e){
             return ResponseEntity.badRequest().build();
         }
