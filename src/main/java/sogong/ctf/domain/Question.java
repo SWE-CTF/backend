@@ -16,7 +16,7 @@ public class Question extends Post {
     @Column(name = "question_id")
     private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "challenge_id")
     private Challenge challengeId;
 
