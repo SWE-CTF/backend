@@ -56,23 +56,27 @@ public class QuestionController {
 
     @DeleteMapping("/{questionId}")
     public ResponseEntity deleteQuestion(@PathVariable("questionId") int questionId, @AuthUser Member member) {
-        Member writer = questionService.findWriter(questionId);
-        if (memberService.IsEquals(member, writer)) {//글 작성자와 지우려고 하는 사람 일치 여부 확인
-            questionService.delete(questionId);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(403).build();
+        try {
+            if (questionService.delete(questionId, member)) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(403).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
     @PutMapping("/{questionId}")
-    public ResponseEntity updateQuestion(@PathVariable("questionId") int questionId, @RequestBody QuestionSaveDTO questionSaveDTO, @AuthUser Member member) {
-        Member writer = questionService.findWriter(questionId);
-        if (memberService.IsEquals(member, writer)) {
-            questionService.update(questionId, questionSaveDTO);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(403).build();
+    public ResponseEntity updateQuestion(@PathVariable("questionId") int questionId, @RequestBody QuestionSaveDTO questionupdateDTO, @AuthUser Member member) {
+        try {
+            if (questionService.update(questionId, questionupdateDTO, member)) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(403).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -88,7 +92,7 @@ public class QuestionController {
     }*/
 
     @GetMapping("/paging")
-    public ResponseEntity<List<QuestionPagingDTO>> AllPage(){
+    public ResponseEntity<List<QuestionPagingDTO>> AllPage() {
         List<QuestionPagingDTO> list = questionService.getAllQuestion();
         return ResponseEntity.ok(list);
     }
