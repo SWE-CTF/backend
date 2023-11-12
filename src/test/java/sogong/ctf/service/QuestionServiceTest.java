@@ -34,9 +34,9 @@ class QuestionServiceTest {
     @Autowired
     private MemberService memberService;
 
-    Member member1;
-    Member member2;
-    Challenge challenge;
+    private Member member1;
+    private Member member2;
+    private Challenge challenge;
 
     @BeforeEach
     void setup() {
