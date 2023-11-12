@@ -17,6 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class QuestionCommentService {
+    private final MemberService memberService;
     private final CommentRepository commentRepository;
     private final QuestionService questionService;
 
@@ -49,7 +50,7 @@ public class QuestionCommentService {
         return dtoList;
     }
 
-    private Comment findByCommentId(long commentId) {
+    public Comment findByCommentId(long commentId) {
         return commentRepository.findById(commentId).get();
     }
 
@@ -58,15 +59,23 @@ public class QuestionCommentService {
     }
 
     @Transactional
-    public void update(long commentId, String content) {
-        Comment comment = findByCommentId(commentId);
-        comment.updateComment(content);
+    public boolean update(long commentId, String content, Member member) {
+        Member writer = findWriter(commentId);
+        if (memberService.IsEquals(member, writer)) {
+            Comment comment = findByCommentId(commentId);
+            comment.updateComment(content);
+            return true;
+        } else return false;
     }
 
     @Transactional
-    public void delete(long commentId) {
-        Comment comment = findByCommentId(commentId);
-        commentRepository.delete(comment);
+    public boolean delete(long commentId,Member member) {
+        Member writer = findWriter(commentId);
+        if (memberService.IsEquals(member, writer)) {
+            Comment comment = findByCommentId(commentId);
+            commentRepository.delete(comment);
+            return true;
+        }else return false;
     }
 
     @Transactional
