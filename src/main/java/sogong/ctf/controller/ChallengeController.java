@@ -30,6 +30,11 @@ public class ChallengeController {
         } else return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/save")
+    public ResponseEntity<List<CategoryListDTO>> categoryForSave(){
+        List<CategoryListDTO> categoryList = categoryService.getCategoryList();
+        return ResponseEntity.ok(categoryList);
+    }
     @PostMapping("/save")
     public ResponseEntity saveChallenge(@RequestPart("saveForm") ChallengeSaveDTO saveForm,
                                         @RequestPart(value = "files", required = false) List<MultipartFile> files, @AuthUser Member member) {
