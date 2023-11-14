@@ -1,9 +1,21 @@
 package sogong.ctf.dto;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Builder
+
+@NoArgsConstructor
+@Getter
 public class CategoryListDTO {
+    private Long categoryId;
     private String categoryName;
     private int cnt;
+
+    @Builder
+    public CategoryListDTO(Long categoryId, String categoryName, int cnt) {
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.cnt = cnt;
+    }
 }

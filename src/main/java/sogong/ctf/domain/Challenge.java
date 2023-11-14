@@ -37,9 +37,10 @@ public class Challenge {
     private List<TestCase> testcases = new ArrayList<>();
 
     @Builder
-    public Challenge(String title, String content, float memory, float time, Member examiner, String hint) {
+    public Challenge(String title, String content,Category categoryId, float memory, float time, Member examiner, String hint) {
         this.title = title;
         this.content = content;
+        this.categoryId=categoryId;
         this.memory = memory;
         this.time = time;
         this.examiner = examiner;

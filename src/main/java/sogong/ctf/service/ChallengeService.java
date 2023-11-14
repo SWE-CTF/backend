@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import sogong.ctf.domain.Category;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.TestCase;
@@ -13,6 +14,7 @@ import sogong.ctf.dto.ChallengeSearchDTO;
 import sogong.ctf.dto.ChallengePagingDTO;
 import sogong.ctf.dto.ChallengeResponseDTO;
 import sogong.ctf.dto.ChallengeSaveDTO;
+import sogong.ctf.repository.CategoryRepository;
 import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.TestCaseRepository;
 
@@ -26,6 +28,7 @@ import java.util.Optional;
 public class ChallengeService {
     private final ChallengeRepository challengeRepository;
     private final TestCaseRepository testCaseRepository;
+    private final CategoryRepository categoryRepository;
     private final FileService challengeFileService;
 
     public List<ChallengePagingDTO> paging(Pageable pageable) {
@@ -44,9 +47,11 @@ public class ChallengeService {
     }
 
     public long save(ChallengeSaveDTO saveForm, Member member) {
+        Category category = categoryRepository.findById(saveForm.getCategoryId()).get();
         Challenge c = Challenge.builder()
                 .title(saveForm.getTitle())
                 .content(saveForm.getContent())
+                .categoryId(category)
                 .time(saveForm.getTime())
                 .memory(saveForm.getMemory())
                 .examiner(member)
