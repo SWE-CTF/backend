@@ -33,17 +33,24 @@ public class Challenge {
     @OneToMany(mappedBy = "challengeId")
     private List<Attempt> attempts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "challengeId")
+    private List<TestCase> testcases = new ArrayList<>();
+
     @Builder
-    public Challenge(String title, String content, float memory, float time, Member examiner,String hint) {
+    public Challenge(String title, String content, float memory, float time, Member examiner, String hint) {
         this.title = title;
         this.content = content;
         this.memory = memory;
         this.time = time;
         this.examiner = examiner;
-        this.hint=hint;
+        this.hint = hint;
     }
 
     public void addAttempt(Attempt attempt) {
         this.attempts.add(attempt);
+    }
+
+    public void addTestCase(TestCase testCase) {
+        this.testcases.add(testCase);
     }
 }

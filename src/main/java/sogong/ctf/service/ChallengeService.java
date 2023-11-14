@@ -8,11 +8,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
+import sogong.ctf.domain.TestCase;
 import sogong.ctf.dto.ChallengeSearchDTO;
 import sogong.ctf.dto.ChallengePagingDTO;
 import sogong.ctf.dto.ChallengeResponseDTO;
 import sogong.ctf.dto.ChallengeSaveDTO;
 import sogong.ctf.repository.ChallengeRepository;
+import sogong.ctf.repository.TestCaseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ChallengeService {
     private final ChallengeRepository challengeRepository;
+    private final TestCaseRepository testCaseRepository;
     private final FileService challengeFileService;
 
     public List<ChallengePagingDTO> paging(Pageable pageable) {
@@ -49,10 +52,35 @@ public class ChallengeService {
                 .examiner(member)
                 .build();
         Challenge save = challengeRepository.save(c);
+        testcase(saveForm, save);
+
         if (saveForm.getFiles() != null) {
-            challengeFileService.save(saveForm.getFiles(),save);
+            challengeFileService.save(saveForm.getFiles(), save);
         }
         return save.getId();
+    }
+
+    private void testcase(ChallengeSaveDTO saveForm, Challenge save) {
+        TestCase case1 = TestCase.builder().input(saveForm.getInput1())
+                .output(saveForm.getOutput1())
+                .challengeId(save)
+                .build();
+        TestCase case2 = TestCase.builder().input(saveForm.getInput1())
+                .output(saveForm.getOutput1())
+                .challengeId(save)
+                .build();
+
+        TestCase case3 = TestCase.builder().input(saveForm.getInput1())
+                .output(saveForm.getOutput1())
+                .challengeId(save)
+                .build();
+        testCaseRepository.save(case1);
+        testCaseRepository.save(case2);
+        testCaseRepository.save(case3);
+
+        save.addTestCase(case1);
+        save.addTestCase(case2);
+        save.addTestCase(case3);
     }
 
     public List<ChallengeSearchDTO> search(String keyword) {
@@ -66,17 +94,19 @@ public class ChallengeService {
 
     public ChallengeResponseDTO getDetails(long challengeId) {
         Optional<Challenge> findChallenge = challengeRepository.findById(challengeId);
-        if(findChallenge.isEmpty()){
+        if (findChallenge.isEmpty()) {
             throw new NoSuchElementException();
-        }else{
+        } else {
             return ChallengeResponseDTO.toDTO(findChallenge.get());
         }
     }
-    public void deleteChallenge(long challengeId){
+
+    public void deleteChallenge(long challengeId) {
         Challenge challenge = findByChallengeId(challengeId).get();
         challengeRepository.delete(challenge);
     }
-    public long findExaminer(long challengeId){
+
+    public long findExaminer(long challengeId) {
         Challenge challenge = findByChallengeId(challengeId).get();
         return challenge.getExaminer().getId();
     }

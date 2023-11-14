@@ -32,12 +32,12 @@ public class ChallengeController {
 
     @PostMapping("/save")
     public ResponseEntity saveChallenge(@RequestPart("saveForm") ChallengeSaveDTO saveForm,
-                                        @RequestPart(value = "files",required = false) List<MultipartFile> files, @AuthUser Member member) {
-        saveForm.setFiles(files);
-        Long save = challengeService.save(saveForm, member);
-        if (save != null) {
+                                        @RequestPart(value = "files", required = false) List<MultipartFile> files, @AuthUser Member member) {
+        try {
+            saveForm.setFiles(files);
+            challengeService.save(saveForm, member);
             return ResponseEntity.ok().build();
-        } else {
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -48,26 +48,28 @@ public class ChallengeController {
             ChallengeResponseDTO details = challengeService.getDetails(challengeId);
             return ResponseEntity.ok(details);
 
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().build();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.internalServerError().build();
         }
     }
+
     @DeleteMapping("/{challengeId}")
-    public ResponseEntity deleteChallenge(@PathVariable("challengeId")int challengeId,@AuthUser Member member){
+    public ResponseEntity deleteChallenge(@PathVariable("challengeId") int challengeId, @AuthUser Member member) {
         long examinerId = challengeService.findExaminer(challengeId);
-        if(examinerId!=member.getId()){
+        if (examinerId != member.getId()) {
             return ResponseEntity.status(403).build();//출제자와 삭제하려는 사용자가 다른 경우
         }
         try {
             challengeService.deleteChallenge(challengeId);
             return ResponseEntity.ok().build();
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }
+
     @GetMapping("search")
     public ResponseEntity<List<ChallengeSearchDTO>> search(@PathVariable(name = "keyword") String keyword) {
         try {
@@ -77,6 +79,7 @@ public class ChallengeController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
     @GetMapping("/categories")
     public ResponseEntity<List<CategoryListDTO>> getCategories() {
         List<CategoryListDTO> categoryList = categoryService.getCategoryList();
