@@ -45,7 +45,7 @@ public class QuestionService {
         return questionRepository.findById(questionId);
     }
 
-    public Member findWriter(long questionId) {
+    private Member findWriter(long questionId) {
         Member writer = findByQuestionId(questionId).get().getMemberId();
         return writer;
     }

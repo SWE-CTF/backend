@@ -54,7 +54,7 @@ public class QuestionCommentService {
         return commentRepository.findById(commentId).get();
     }
 
-    public Member findWriter(long commentId) {
+    private Member findWriter(long commentId) {
         return findByCommentId(commentId).getWriter();
     }
 
