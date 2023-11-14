@@ -23,10 +23,13 @@ public class CategoryService {
         for (Category category : categoryList) {
             List<Challenge> allByCategoryId = challengeRepository.findAllByCategoryId(category);
             CategoryListDTO dto = CategoryListDTO.builder()
+                    .categoryId(category.getId())
                     .categoryName(category.getName())
                     .cnt(allByCategoryId.size())
                     .build();
+            categories.add(dto);
         }
         return categories;
     }
+
 }
