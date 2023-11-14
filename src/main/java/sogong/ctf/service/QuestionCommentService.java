@@ -69,13 +69,13 @@ public class QuestionCommentService {
     }
 
     @Transactional
-    public boolean delete(long commentId,Member member) {
+    public boolean delete(long commentId, Member member) {
         Member writer = findWriter(commentId);
         if (memberService.IsEquals(member, writer)) {
             Comment comment = findByCommentId(commentId);
             commentRepository.delete(comment);
             return true;
-        }else return false;
+        } else return false;
     }
 
     @Transactional

@@ -57,20 +57,20 @@ public class QuestionService {
     }
 
     @Transactional
-    public boolean delete(long questionId,Member member) {
+    public boolean delete(long questionId, Member member) {
         Member writer = findWriter(questionId);
 
         Question q = findByQuestionId(questionId).get();
         if (memberService.IsEquals(member, writer)) {//글 작성자와 지우려고 하는 사람 일치 여부 확인
             questionRepository.delete(q);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
     @Transactional
-    public boolean update(long questionId, QuestionSaveDTO questionSaveDTO,Member member){
+    public boolean update(long questionId, QuestionSaveDTO questionSaveDTO, Member member) {
         Question q = findByQuestionId(questionId).orElseThrow(() -> new NoSuchElementException());
         Member writer = findWriter(questionId);
         if (memberService.IsEquals(member, writer)) {
