@@ -10,18 +10,12 @@ import sogong.ctf.domain.Category;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.TestCase;
-import sogong.ctf.dto.ChallengeSearchDTO;
-import sogong.ctf.dto.ChallengePagingDTO;
-import sogong.ctf.dto.ChallengeResponseDTO;
-import sogong.ctf.dto.ChallengeSaveDTO;
+import sogong.ctf.dto.*;
 import sogong.ctf.repository.CategoryRepository;
 import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.TestCaseRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -98,12 +92,24 @@ public class ChallengeService {
     }
 
     public ChallengeResponseDTO getDetails(long challengeId) {
-        Optional<Challenge> findChallenge = challengeRepository.findById(challengeId);
+        Optional<Challenge> findChallenge = challengeRepository.findById(challengeId);//문제 찾기
         if (findChallenge.isEmpty()) {
             throw new NoSuchElementException();
         } else {
-            return ChallengeResponseDTO.toDTO(findChallenge.get());
+            List<byte[]> files = challengeFileService.getFiles(findChallenge.get());//파일 찾기
+            List<TestCaseDTO> testCases = findTestCases(findChallenge.get());//테스트케이스 찾기
+            return ChallengeResponseDTO.toDTO(findChallenge.get(),testCases,files);
         }
+    }
+
+    private List<TestCaseDTO> findTestCases(Challenge findChallenge) {
+        List<TestCase> testcases = testCaseRepository.findAllByChallengeId(findChallenge);
+        List<TestCaseDTO> caseDTOS = new ArrayList<>();
+        for (TestCase testcase : testcases) {
+            TestCaseDTO dto = new TestCaseDTO(testcase.getInput(),testcase.getOutput());
+            caseDTOS.add(dto);
+        }
+        return caseDTOS;
     }
 
     public void deleteChallenge(long challengeId) {

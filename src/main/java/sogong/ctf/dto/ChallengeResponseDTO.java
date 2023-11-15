@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import sogong.ctf.domain.Challenge;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
 @Builder
@@ -18,8 +20,10 @@ public class ChallengeResponseDTO {
     private String hint;
     private String examiner;
     private String category;
+    private List<byte[]> files;
+    private List<TestCaseDTO> testcases;
 
-    public static ChallengeResponseDTO toDTO(Challenge challenge){
+    public static ChallengeResponseDTO toDTO(Challenge challenge, List<TestCaseDTO> testCases, List<byte[]> files){
         return ChallengeResponseDTO.builder()
                 .id(challenge.getId())
                 .title(challenge.getTitle())
@@ -29,6 +33,8 @@ public class ChallengeResponseDTO {
                 .examiner(challenge.getExaminer().getUsername())
                 .memory(challenge.getMemory())
                 .time(challenge.getTime())
+                .testcases(testCases)
+                .files(files)
                 .category((challenge.getCategoryId()==null)?"":challenge.getCategoryId().getName())
                 .build();
     }

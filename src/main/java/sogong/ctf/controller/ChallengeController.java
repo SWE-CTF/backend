@@ -51,6 +51,7 @@ public class ChallengeController {
     public ResponseEntity<ChallengeResponseDTO> getChallenge(@PathVariable("challengeId") int challengeId) {
         try {
             ChallengeResponseDTO details = challengeService.getDetails(challengeId);
+
             return ResponseEntity.ok(details);
 
         } catch (NoSuchElementException e) {
