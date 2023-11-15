@@ -86,7 +86,9 @@ public class ChallengeService {
         List<Challenge> searchResult = challengeRepository.findAllByTitleContaining(keyword);
         List<ChallengeSearchDTO> list = new ArrayList<>();
         for (Challenge challenge : searchResult) {
-            list.add(ChallengeSearchDTO.builder().title(challenge.getTitle()).build());
+            list.add(ChallengeSearchDTO.builder()
+                    .challengeId(challenge.getId())
+                    .title(challenge.getTitle()).build());
         }
         return list;
     }
@@ -98,7 +100,7 @@ public class ChallengeService {
         } else {
             List<byte[]> files = challengeFileService.getFiles(findChallenge.get());//파일 찾기
             List<TestCaseDTO> testCases = findTestCases(findChallenge.get());//테스트케이스 찾기
-            return ChallengeResponseDTO.toDTO(findChallenge.get(),testCases,files);
+            return ChallengeResponseDTO.toDTO(findChallenge.get(), testCases, files);
         }
     }
 
@@ -106,7 +108,7 @@ public class ChallengeService {
         List<TestCase> testcases = testCaseRepository.findAllByChallengeId(findChallenge);
         List<TestCaseDTO> caseDTOS = new ArrayList<>();
         for (TestCase testcase : testcases) {
-            TestCaseDTO dto = new TestCaseDTO(testcase.getInput(),testcase.getOutput());
+            TestCaseDTO dto = new TestCaseDTO(testcase.getInput(), testcase.getOutput());
             caseDTOS.add(dto);
         }
         return caseDTOS;

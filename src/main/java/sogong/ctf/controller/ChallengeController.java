@@ -76,8 +76,9 @@ public class ChallengeController {
         }
     }
 
+
     @GetMapping("search")
-    public ResponseEntity<List<ChallengeSearchDTO>> search(@PathVariable(name = "keyword") String keyword) {
+    public ResponseEntity<List<ChallengeSearchDTO>> search(@RequestParam("keyword") String keyword) {
         try {
             List<ChallengeSearchDTO> searchResult = challengeService.search(keyword);
             return ResponseEntity.ok(searchResult);
