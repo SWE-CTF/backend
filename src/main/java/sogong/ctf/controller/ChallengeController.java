@@ -22,6 +22,9 @@ public class ChallengeController {
     private final ChallengeService challengeService;
     private final CategoryService categoryService;
 
+    /*
+    문제 페이징
+     */
     @GetMapping("/paging")
     public ResponseEntity<List<ChallengePagingDTO>> paging(@PageableDefault(page = 1) Pageable page) {
         List<ChallengePagingDTO> paging = challengeService.paging(page);
@@ -30,11 +33,18 @@ public class ChallengeController {
         } else return ResponseEntity.notFound().build();
     }
 
+    /*
+    문제 출제 시 필요한 카테고리 번호 리스트 응답
+     */
     @GetMapping("/save")
-    public ResponseEntity<List<CategoryListDTO>> categoryForSave(){
+    public ResponseEntity<List<CategoryListDTO>> categoryForSave() {
         List<CategoryListDTO> categoryList = categoryService.getCategoryList();
         return ResponseEntity.ok(categoryList);
     }
+
+    /*
+    문제 출제
+     */
     @PostMapping("/save")
     public ResponseEntity saveChallenge(@RequestPart("saveForm") ChallengeSaveDTO saveForm,
                                         @RequestPart(value = "files", required = false) List<MultipartFile> files, @AuthUser Member member) {
@@ -47,6 +57,9 @@ public class ChallengeController {
         }
     }
 
+    /*
+    문제 상세조회
+     */
     @GetMapping("{challengeId}")
     public ResponseEntity<ChallengeResponseDTO> getChallenge(@PathVariable("challengeId") int challengeId) {
         try {
@@ -62,6 +75,9 @@ public class ChallengeController {
         }
     }
 
+    /*
+    문제 삭제
+     */
     @DeleteMapping("/{challengeId}")
     public ResponseEntity deleteChallenge(@PathVariable("challengeId") int challengeId, @AuthUser Member member) {
         long examinerId = challengeService.findExaminer(challengeId);
@@ -76,7 +92,9 @@ public class ChallengeController {
         }
     }
 
-
+    /*
+   keyword로 시작하는 문제 제목 검색
+    */
     @GetMapping("search")
     public ResponseEntity<List<ChallengeSearchDTO>> search(@RequestParam("keyword") String keyword) {
         try {
