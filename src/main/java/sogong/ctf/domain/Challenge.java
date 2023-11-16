@@ -28,7 +28,7 @@ public class Challenge {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category categoryId;
-
+    private boolean fileExist;
 
     @OneToMany(mappedBy = "challengeId")
     private List<Attempt> attempts = new ArrayList<>();
@@ -37,7 +37,7 @@ public class Challenge {
     private List<TestCase> testcases = new ArrayList<>();
 
     @Builder
-    public Challenge(String title, String content,Category categoryId, float memory, float time, Member examiner, String hint) {
+    public Challenge(String title, String content,Category categoryId, float memory, float time, Member examiner, String hint,boolean fileExist) {
         this.title = title;
         this.content = content;
         this.categoryId=categoryId;
@@ -45,6 +45,7 @@ public class Challenge {
         this.time = time;
         this.examiner = examiner;
         this.hint = hint;
+        this.fileExist=fileExist;
     }
 
     public void addAttempt(Attempt attempt) {
@@ -53,5 +54,8 @@ public class Challenge {
 
     public void addTestCase(TestCase testCase) {
         this.testcases.add(testCase);
+    }
+    public void changeFileExist(boolean fileExist){
+        this.fileExist=fileExist;
     }
 }
