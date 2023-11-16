@@ -21,8 +21,6 @@ public class Attempt {
     private Member memberId;
 
     private String code;
-    private float memory;
-    private float time;
 
     @Enumerated(EnumType.STRING)
     private CodeStatus codeStatus;
@@ -32,11 +30,9 @@ public class Attempt {
     private Challenge challengeId;
 
     @Builder
-    public Attempt(Member member, String code, float memory, float time, CodeStatus codeStatus, Challenge challenge){
+    public Attempt(Member member, String code, CodeStatus codeStatus, Challenge challenge){
         this.memberId = member;
         this.code =code;
-        this.memory = memory;
-        this.time = time;
         this.codeStatus = codeStatus;
         this.challengeId = challenge;
     }

@@ -19,9 +19,9 @@ public class AttemptController {
     private final AttemptService attemptService;
 
     @PostMapping("/api/attempt/challenge")
-    public ResponseEntity compileCode(@RequestBody CodeRequestDTO codeRequestDTO, @AuthUser Member member){
+    public ResponseEntity compileCode(@AuthUser Member member, @RequestBody CodeRequestDTO codeRequestDTO){
         try{
-            attemptService.compileAndRun(codeRequestDTO, member);
+            attemptService.compileAndRun(codeRequestDTO,member);
             return new ResponseEntity(HttpStatus.OK);
         }catch(Exception e){
             return ResponseEntity.status(400).build();
