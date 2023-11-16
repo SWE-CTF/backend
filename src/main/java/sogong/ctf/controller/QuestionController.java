@@ -27,6 +27,7 @@ public class QuestionController {
 
     @PostMapping("/save")//질문 게시글 작성
     public ResponseEntity saveQuestion(@RequestBody QuestionSaveDTO saveForm, @AuthUser Member member) {//질문 작성
+        log.info("질문 게시글 작성 요청");
         if (member.getId() == null) {
             return ResponseEntity.status(403).build();
         } else {
