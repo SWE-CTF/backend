@@ -3,24 +3,17 @@ package sogong.ctf.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sogong.ctf.domain.Member;
 import sogong.ctf.dto.CategoryListDTO;
 import sogong.ctf.dto.ChallengeListDTO;
 import sogong.ctf.dto.ChallengePagingDTO;
-import sogong.ctf.service.AttemptService;
 import sogong.ctf.dto.ChallengeSaveDTO;
 import sogong.ctf.service.AuthUser;
 import sogong.ctf.service.CategoryService;
 import sogong.ctf.service.ChallengeService;
-import sogong.ctf.service.MemberService;
 
 import java.util.List;
 

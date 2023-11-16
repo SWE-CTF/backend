@@ -18,7 +18,7 @@ import java.util.UUID;
 @Slf4j
 public class FileService {
     private final ChallengeFileRepository challengeFileRepository;
-    private final String path = "C://Users//오주은//Desktop//학교//3-2//소공//challengeImg";
+    private final String path = "C://User//user//Desktop//학교//3-2//소공//challengeImg";
 
     public void save(List<MultipartFile> files, Challenge challenge) {
         for (MultipartFile file : files) {
