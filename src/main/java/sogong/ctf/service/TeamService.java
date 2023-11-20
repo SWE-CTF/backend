@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.Team;
-import sogong.ctf.dto.TeamFormDTO;
+import sogong.ctf.dto.response.TeamFormDTO;
 import sogong.ctf.repository.TeamRepository;
 
 import java.util.List;

@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.config.security.JwtProvider;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Role;
-import sogong.ctf.dto.MemberRequestDTO;
-import sogong.ctf.dto.MemberResponseDTO;
-import sogong.ctf.dto.TokenDTO;
+import sogong.ctf.dto.request.MemberRequestDTO;
+import sogong.ctf.dto.response.MemberResponseDTO;
+import sogong.ctf.dto.response.TokenDTO;
 import sogong.ctf.repository.MemberRepository;
 
 import javax.servlet.http.HttpServletRequest;

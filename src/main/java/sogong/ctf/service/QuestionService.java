@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Question;
-import sogong.ctf.dto.QuestionPagingDTO;
-import sogong.ctf.dto.QuestionResponseDTO;
-import sogong.ctf.dto.QuestionSaveDTO;
+import sogong.ctf.dto.response.QuestionPagingDTO;
+import sogong.ctf.dto.response.QuestionResponseDTO;
+import sogong.ctf.dto.request.QuestionSaveDTO;
 import sogong.ctf.repository.QuestionRepository;
 
 import java.time.LocalDateTime;

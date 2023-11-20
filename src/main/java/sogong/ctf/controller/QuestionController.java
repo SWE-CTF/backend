@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
-import sogong.ctf.dto.CommentResponseDTO;
-import sogong.ctf.dto.QuestionPagingDTO;
-import sogong.ctf.dto.QuestionResponseDTO;
-import sogong.ctf.dto.QuestionSaveDTO;
+import sogong.ctf.dto.response.CommentResponseDTO;
+import sogong.ctf.dto.response.QuestionPagingDTO;
+import sogong.ctf.dto.response.QuestionResponseDTO;
+import sogong.ctf.dto.request.QuestionSaveDTO;
 import sogong.ctf.service.*;
 
 import java.util.List;

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Member;
-import sogong.ctf.dto.QuestionCommentSaveDTO;
+import sogong.ctf.dto.request.QuestionCommentSaveDTO;
 import sogong.ctf.service.QuestionCommentService;
 
 import java.util.HashMap;
