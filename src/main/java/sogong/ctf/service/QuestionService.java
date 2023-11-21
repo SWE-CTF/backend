@@ -25,6 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class QuestionService {
     private final QuestionRepository questionRepository;
+    private final MemberService memberService;
 
     @Transactional
     public long save(Member member, QuestionSaveDTO saveForm, Challenge challenge) {
@@ -44,7 +45,7 @@ public class QuestionService {
         return questionRepository.findById(questionId);
     }
 
-    public Member findWriter(long questionId) {
+    private Member findWriter(long questionId) {
         Member writer = findByQuestionId(questionId).get().getMemberId();
         return writer;
     }
@@ -56,15 +57,29 @@ public class QuestionService {
     }
 
     @Transactional
-    public void delete(long questionId) {
+    public boolean delete(long questionId, Member member) {
+        Member writer = findWriter(questionId);
+
         Question q = findByQuestionId(questionId).get();
-        questionRepository.delete(q);
+        if (memberService.IsEquals(member, writer)) {//글 작성자와 지우려고 하는 사람 일치 여부 확인
+            questionRepository.delete(q);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Transactional
-    public void update(long questionId, QuestionSaveDTO questionSaveDTO) {
+    public boolean update(long questionId, QuestionSaveDTO questionSaveDTO, Member member) {
         Question q = findByQuestionId(questionId).orElseThrow(() -> new NoSuchElementException());
-        q.updateQuestion(questionSaveDTO.getTitle(), questionSaveDTO.getContent());
+        Member writer = findWriter(questionId);
+        if (memberService.IsEquals(member, writer)) {
+            q.updateQuestion(questionSaveDTO.getTitle(), questionSaveDTO.getContent());
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public List<QuestionPagingDTO> paging(Pageable page) {
