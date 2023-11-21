@@ -115,7 +115,7 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberReponseNotTokenDTO postProfile(ProfilePostDTO profilePostDTO, Member member) {
+    public MemberResponseNotTokenDTO postProfile(ProfilePostDTO profilePostDTO, Member member) {
         Optional<Member> member1 = memberRepository.findById(member.getId());
 
         if(!passwordEncoder.matches(profilePostDTO.getCurrentPW(),member1.get().getPassword()))
@@ -131,7 +131,7 @@ public class MemberService {
             member1.get().updateData(profilePostNotPWDTO);
         }
 
-        return MemberReponseNotTokenDTO.builder()
+        return MemberResponseNotTokenDTO.builder()
                 .username(member1.get().getUsername())
                 .name(member1.get().getName())
                 .email(member1.get().getEmail())
