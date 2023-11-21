@@ -11,12 +11,12 @@ import sogong.ctf.domain.Team;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberResponseDTO {
+public class MemberResponseNotTokenDTO {
     private String username;
     private String name;
     private String email;
     private String nickname;
     private Team team;
     private Role role;
-    private TokenDTO token;
 }
+

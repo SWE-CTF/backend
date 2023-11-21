@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import sogong.ctf.dto.MemberResponseDTO;
+import sogong.ctf.dto.ProfilePostDTO;
+import sogong.ctf.dto.ProfilePostNotPWDTO;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -55,4 +58,16 @@ public class Member {
 
     public void addAttempt(Attempt attempt){this.attempts.add(attempt);}
 
+    public void addCount(){
+        this.count += 1;
+    }
+
+    public void updateData(ProfilePostDTO profilePostDTO){
+        this.nickname = profilePostDTO.getNickname();
+        this.password = profilePostDTO.getNewPW();
+    }
+
+    public void updateData(ProfilePostNotPWDTO profilePostNotPWDTO){
+        this.nickname = profilePostNotPWDTO.getNickname();
+    }
 }
