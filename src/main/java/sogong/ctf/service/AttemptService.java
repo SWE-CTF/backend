@@ -10,11 +10,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.*;
+import sogong.ctf.dto.AttemptDTO;
 import sogong.ctf.dto.CodeRequestDTO;
 import sogong.ctf.repository.AttemptRepository;
 import sogong.ctf.repository.ChallengeRepository;
+import sogong.ctf.repository.MemberRepository;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ public class AttemptService {
 
     private final AttemptRepository attemptRepository;
     private final ChallengeRepository challengeRepository;
+    private final MemberRepository memberRepository;
 
     public List<Attempt> getChallengeAttempt(Long id) {
         Optional<Challenge> challenge = challengeRepository.findById(id);
@@ -58,15 +62,16 @@ public class AttemptService {
         String userCode = codeRequestDTO.getCode();
         Long attemptId = saveAttempt(codeRequestDTO, member);
         String image = null;
-        List<CodeStatus> codeStatusList = new ArrayList<>();
         int exitCode = 0;
         CodeStatus codeStatus = null;
 
+        System.out.println(codeRequestDTO.getCode());
         //첫 시도 입력
 
         Optional<Challenge> challenge = challengeRepository.findById(codeRequestDTO.getChallengeId());
         List<TestCase> testCaseList = challenge.get().getTestCaseList();
         //해당 문제에서 testcase
+        Optional<Member> member1 = memberRepository.findByUsername(member.getUsername());
 
         float memory = challenge.get().getMemory();
         float time = challenge.get().getTime();
@@ -109,7 +114,7 @@ public class AttemptService {
                     createContainerCmd = docker.createContainerCmd(image)
                             .withAttachStderr(true)
                             .withAttachStdout(true)
-                            .withCmd("sh", "-c", "echo '" + userCode + "' > /usr/src/app/Main.java && javac /usr/src/app/Main.java && timeout " + timeLimit + "s java -classpath /usr/src/app Main '" + arg + "'")
+                            .withCmd("sh", "-c", "echo '" + userCode + "' > /usr/src/app/Main.java && javac /usr/src/app/Main.java && timeout " + timeLimit + "s java -classpath /usr/src/app Main " + arg)
                             .withHostConfig(new HostConfig()
                                     .withMemory((long) memoryLimit)
                                     .withMemorySwap((long) memoryLimit)
@@ -119,7 +124,7 @@ public class AttemptService {
                     createContainerCmd = docker.createContainerCmd(image)
                             .withAttachStderr(true)
                             .withAttachStdout(true)
-                            .withCmd("sh", "-c", "echo '" + userCode + "' > /usr/src/app/main.py && timeout " + timeLimit + "s python3 /usr/src/app/main.py '" + arg + "'")
+                            .withCmd("sh", "-c", "echo '" + userCode + "' > /usr/src/app/main.py && timeout " + timeLimit + "s python3 /usr/src/app/main.py " + arg)
                             .withHostConfig(new HostConfig()
                                     .withMemory((long) memoryLimit)
                                     .withMemorySwap((long) memoryLimit*2)
@@ -128,7 +133,7 @@ public class AttemptService {
                     createContainerCmd = docker.createContainerCmd(image)
                             .withAttachStderr(true)
                             .withAttachStdout(true)
-                            .withCmd("sh", "-c", "echo '" + userCode + "' > /usr/src/app/main.c && gcc -o /usr/src/app/main /usr/src/app/main.c && timeout " + timeLimit + "s /usr/src/app/main '" + arg + "'")
+                            .withCmd("sh", "-c", "echo '" + userCode + "' > /usr/src/app/main.c && gcc -o /usr/src/app/main /usr/src/app/main.c && timeout " + timeLimit + "s /usr/src/app/main " + arg)
                             .withHostConfig(new HostConfig()
                                     .withMemory((long) memoryLimit)
                                     .withMemorySwap((long) memoryLimit*2)
@@ -189,8 +194,11 @@ public class AttemptService {
                             codeStatus = CodeStatus.TIME;
                             break;
                         }
+                        else{
+                            codeStatus = CodeStatus.ERROR;
+                            break;
+                        }
                     }
-
             }
             //testcase 실행
 
@@ -198,9 +206,12 @@ public class AttemptService {
 
             Optional<Attempt> attempt = attemptRepository.findById(attemptId);
 
+
+
             //codeStatus 상태가 성공일 경우
             if(codeStatus == CodeStatus.SUCCESS) {
-                member.addCount();
+                member1.get().addCount();
+                challenge.get().addCorrectCnt();
             }
             //사용자 +1
             //codeStatus 상태가 성공일 경우
@@ -209,7 +220,7 @@ public class AttemptService {
             //codeStatusList의 상태를 보고 attempt 수정
 
             //시도한 내력 추가, 사용자/문제
-            member.addAttempt(attempt.get());
+            member1.get().addAttempt(attempt.get());
             challenge.get().addAttempt(attempt.get());
 
             ///test
@@ -231,8 +242,19 @@ public class AttemptService {
     }
 
 
-    public List<Attempt> getMemberAttempt(Member member) {
-        return member.getAttempts();
+    public List<AttemptDTO> getMemberAttempt(Member member) {
+        Optional<Member> member1 = memberRepository.findByUsername(member.getUsername());
+        List<AttemptDTO> attempts = new ArrayList<>();
+        for(Attempt attempt : member1.get().getAttempts()){
+            AttemptDTO attemptDTO = AttemptDTO.builder()
+                    .attemptId(attempt.getId())
+                    .code(attempt.getCode())
+                    .codeStatus(attempt.getCodeStatus())
+                    .challengeId(attempt.getChallengeId().getId())
+                    .build();
+            attempts.add(attemptDTO);
+        }
+        return attempts;
     }
 
 }

@@ -61,4 +61,5 @@ public class Challenge {
     public void changeFileExist(boolean fileExist){
         this.fileExist=fileExist;
     }
+    public void addCorrectCnt(){this.correctCnt++;}
 }

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import sogong.ctf.dto.MemberResponseDTO;
+import sogong.ctf.dto.ProfilePostDTO;
+import sogong.ctf.dto.ProfilePostNotPWDTO;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -60,16 +62,12 @@ public class Member {
         this.count += 1;
     }
 
-    public void updateData(MemberResponseDTO memberResponseDTO){
-        this.username = memberResponseDTO.getUsername();
-        this.name = memberResponseDTO.getName();
-        this.email = memberResponseDTO.getEmail();
-        this.nickname = memberResponseDTO.getNickname();
-        this.team = memberResponseDTO.getTeam();
+    public void updateData(ProfilePostDTO profilePostDTO){
+        this.nickname = profilePostDTO.getNickname();
+        this.password = profilePostDTO.getNewPW();
     }
 
-    public void updatePW(String password){
-        this.password = password;
+    public void updateData(ProfilePostNotPWDTO profilePostNotPWDTO){
+        this.nickname = profilePostNotPWDTO.getNickname();
     }
-
 }

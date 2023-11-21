@@ -9,14 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.config.security.JwtProvider;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Role;
-import sogong.ctf.dto.MemberPasswordDTO;
-import sogong.ctf.dto.MemberRequestDTO;
-import sogong.ctf.dto.MemberResponseDTO;
-import sogong.ctf.dto.TokenDTO;
+import sogong.ctf.dto.*;
 import sogong.ctf.repository.MemberRepository;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.ValidationException;
 import java.security.NoSuchProviderException;
 import java.util.List;
 import java.util.Optional;
@@ -106,37 +101,45 @@ public class MemberService {
     }
 
 
-    public MemberResponseDTO showProfile(Member member) {
-        return MemberResponseDTO.builder()
-                .username(member.getUsername())
-                .name(member.getName())
-                .nickname(member.getNickname())
-                .team(member.getTeam())
-                .email(member.getEmail())
+    public ProfileResponseDTO showProfile(Member member) {
+        Optional<Member> byUsername = memberRepository.findByUsername(member.getUsername());
+
+        int allCount = byUsername.get().getAttempts().size();
+        int coCount = byUsername.get().getCount();
+        int incoCount = allCount - coCount;
+
+        return ProfileResponseDTO.builder()
+                .attemptCount(allCount)
+                .correctCount(coCount)
+                .incorrectCount(incoCount).build();
+    }
+
+    @Transactional
+    public MemberReponseNotTokenDTO postProfile(ProfilePostDTO profilePostDTO, Member member) {
+        Optional<Member> member1 = memberRepository.findById(member.getId());
+
+        if(!passwordEncoder.matches(profilePostDTO.getCurrentPW(),member1.get().getPassword()))
+            throw new BadCredentialsException("password false");
+
+        if(!profilePostDTO.getNewPW().isEmpty()){
+            profilePostDTO.setNewPW(passwordEncoder.encode(profilePostDTO.getNewPW()));
+            member1.get().updateData(profilePostDTO);
+        } else {
+            ProfilePostNotPWDTO profilePostNotPWDTO = ProfilePostNotPWDTO.builder()
+                    .nickname(profilePostDTO.getNickname())
+                    .build();
+            member1.get().updateData(profilePostNotPWDTO);
+        }
+
+        return MemberReponseNotTokenDTO.builder()
+                .username(member1.get().getUsername())
+                .name(member1.get().getName())
+                .email(member1.get().getEmail())
+                .nickname(member1.get().getNickname())
+                .role(member1.get().getRole())
                 .build();
     }
 
-    @Transactional
-    public MemberResponseDTO postProfile(MemberResponseDTO memberResponseDTO, Member member) {
-        Optional<Member> member1 = memberRepository.findById(member.getId());
-        member1.get().updateData(memberResponseDTO);
-        return memberResponseDTO;
-    }
-
-    public boolean checkPassword(MemberPasswordDTO memberPasswordDTO, Member member) {
-
-        if (!passwordEncoder.matches(memberPasswordDTO.getPassword(), member.getPassword()))
-            throw new BadCredentialsException("password false");
-
-        return true;
-    }
-
-    @Transactional
-    public boolean updatePassword(MemberPasswordDTO memberPasswordDTO, Member member) {
-        Optional<Member> member1 = memberRepository.findById(member.getId());
-        member1.get().updatePW(passwordEncoder.encode(memberPasswordDTO.getPassword()));
-        return true;
-    }
 
     @Transactional
     public Long joinAdmin(MemberRequestDTO memberRequestDTO) {

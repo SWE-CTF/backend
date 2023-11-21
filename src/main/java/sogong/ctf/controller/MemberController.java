@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Member;
-import sogong.ctf.dto.MemberPasswordDTO;
-import sogong.ctf.dto.MemberRequestDTO;
-import sogong.ctf.dto.MemberResponseDTO;
-import sogong.ctf.dto.TeamFormDTO;
+import sogong.ctf.dto.*;
 import sogong.ctf.service.AuthUser;
 import sogong.ctf.service.MemberService;
 import sogong.ctf.service.TeamService;
@@ -97,30 +94,11 @@ public class MemberController {
     }
 
     @PostMapping("/api/member/profile")
-    public ResponseEntity postProfile(@RequestBody MemberResponseDTO memberResponseDTO, @AuthUser Member member){
+    public ResponseEntity postProfile(@RequestBody ProfilePostDTO profilePostDTO, @AuthUser Member member){
         try{
-            return ResponseEntity.ok(memberService.postProfile(memberResponseDTO,member));
+            return ResponseEntity.ok(memberService.postProfile(profilePostDTO,member));
         }catch(Exception e){
             return ResponseEntity.status(400).build();
         }
     }
-
-    @GetMapping("/api/member/profile/password")
-    public ResponseEntity checkPassword(@RequestBody MemberPasswordDTO memberPasswordDTO, @AuthUser Member member){
-        try{
-            return ResponseEntity.ok(memberService.checkPassword(memberPasswordDTO, member));
-        }catch(Exception e){
-            return ResponseEntity.status(400).build();
-        }
-    }
-
-    @PostMapping("/api/member/profile/password")
-    public ResponseEntity updatePassword(@RequestBody MemberPasswordDTO memberPasswordDTO, @AuthUser Member member){
-        try{
-            return ResponseEntity.ok(memberService.updatePassword(memberPasswordDTO,member));
-        }catch(Exception e){
-            return ResponseEntity.status(400).build();
-        }
-    }
-
 }
