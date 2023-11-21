@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.*;
 import sogong.ctf.dto.AttemptDTO;
@@ -23,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +34,20 @@ public class AttemptService {
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
 
-    public List<Attempt> getChallengeAttempt(Long id) {
+    public List<AttemptDTO> getChallengeAttempt(Long id) {
         Optional<Challenge> challenge = challengeRepository.findById(id);
-        return challenge.get().getAttempts();
+        return getAttemptListDTO(challenge.get().getAttempts());
+    }
+
+    private List<AttemptDTO> getAttemptListDTO(List<Attempt> attempts) {
+        return attempts.stream()
+                .map(attempt -> AttemptDTO.builder()
+                        .attemptId(attempt.getId())
+                        .code(attempt.getCode())
+                        .codeStatus(attempt.getCodeStatus())
+                        .challengeId(attempt.getChallengeId().getId())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -244,17 +255,7 @@ public class AttemptService {
 
     public List<AttemptDTO> getMemberAttempt(Member member) {
         Optional<Member> member1 = memberRepository.findByUsername(member.getUsername());
-        List<AttemptDTO> attempts = new ArrayList<>();
-        for(Attempt attempt : member1.get().getAttempts()){
-            AttemptDTO attemptDTO = AttemptDTO.builder()
-                    .attemptId(attempt.getId())
-                    .code(attempt.getCode())
-                    .codeStatus(attempt.getCodeStatus())
-                    .challengeId(attempt.getChallengeId().getId())
-                    .build();
-            attempts.add(attemptDTO);
-        }
-        return attempts;
+        return getAttemptListDTO(member1.get().getAttempts());
     }
 
 }
