@@ -3,10 +3,7 @@ package sogong.ctf.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Member;
 import sogong.ctf.dto.CodeRequestDTO;
 import sogong.ctf.service.AttemptService;
@@ -37,12 +34,10 @@ public class AttemptController {
         }
     }
 
-    @GetMapping("/api/attempt/challenge")
-    public ResponseEntity getChallengeAttempts(){
-        //challenge id 받아오기
-        Long id = (long) 0.0; // 나중에 고칠거
+    @GetMapping("/api/challenge/{challengeId}/attempt")
+    public ResponseEntity getChallengeAttempts(@PathVariable("challengeId") Long challengeId){
         try{
-            return ResponseEntity.ok(attemptService.getChallengeAttempt(id));
+            return ResponseEntity.ok(attemptService.getChallengeAttempt(challengeId));
         }catch(Exception e){
             return ResponseEntity.notFound().build();
         }

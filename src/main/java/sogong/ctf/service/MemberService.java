@@ -15,6 +15,7 @@ import sogong.ctf.repository.MemberRepository;
 import java.security.NoSuchProviderException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -89,15 +90,14 @@ public class MemberService {
         return memberRepository.findById(id).get();
     }
 
-    @Transactional
-    public void increaseCount(Long id){
-        Optional<Member> member = memberRepository.findById(id);
-        member.get().addCount();
-    }
-
-    public List<String> rank(){
-        List<String> allOrderByCount = memberRepository.findAllOrderByCount();
-        return allOrderByCount;
+    public List<RankDTO> rank(){
+        List<Member> allOrderByCount = memberRepository.findAllOrderByCount();
+        return allOrderByCount.stream()
+                .map(Member -> RankDTO.builder()
+                        .nickname(Member.getNickname())
+                        .count(Member.getCount())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 

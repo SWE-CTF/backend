@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member,Long> {
     Optional<Member> findByUsername (String username);
 
-    @Query("SELECT t.nickname, t.count FROM Member t ORDER BY t.count DESC")
-    List<String> findAllOrderByCount();
+    @Query("SELECT t FROM Member t ORDER BY t.count DESC")
+    List<Member> findAllOrderByCount();
 
 }
