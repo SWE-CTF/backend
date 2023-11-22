@@ -34,6 +34,9 @@ public class Challenge {
     private List<Attempt> attempts = new ArrayList<>();
 
     @OneToMany(mappedBy = "challengeId")
+    private List<TestCase> testCaseList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "challengeId")
     private List<TestCase> testcases = new ArrayList<>();
 
     @Builder
@@ -58,4 +61,5 @@ public class Challenge {
     public void changeFileExist(boolean fileExist){
         this.fileExist=fileExist;
     }
+    public void addCorrectCnt(){this.correctCnt++;}
 }
