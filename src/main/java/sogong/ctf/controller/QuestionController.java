@@ -81,17 +81,6 @@ public class QuestionController {
         }
     }
 
-    /*@GetMapping("/paging")
-    public ResponseEntity<Map<String, Object>> paging(@PageableDefault(page = 1) Pageable page) {
-        List<QuestionPagingDTO> paging = questionService.paging(page);
-        if (paging.size() == 0) {
-            return ResponseEntity.status(404).build();
-        }
-        Map<String, Object> response = new HashMap<>();
-        response.put("paging", paging);
-        return ResponseEntity.ok(response);
-    }*/
-
     @GetMapping("/paging")
     public ResponseEntity<List<QuestionPagingDTO>> AllPage() {
         List<QuestionPagingDTO> list = questionService.getAllQuestion();
