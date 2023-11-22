@@ -7,16 +7,14 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Member;
+import sogong.ctf.dto.request.NoticeSaveDTO;
 import sogong.ctf.dto.response.NoticePagingDTO;
 import sogong.ctf.dto.response.NoticeResponseDTO;
-import sogong.ctf.dto.request.NoticeSaveDTO;
 import sogong.ctf.service.AuthUser;
 import sogong.ctf.service.MemberService;
 import sogong.ctf.service.NoticeService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Slf4j
@@ -70,14 +68,12 @@ public class NoticeController {
     }
 
     @GetMapping("/paging")
-    public ResponseEntity<Map<String, Object>> paging(@PageableDefault(page = 1) Pageable page) {
-        List<NoticePagingDTO> paging = noticeService.paging(page);
-        if (paging.size() == 0) {
-            return ResponseEntity.status(404).build();
+    public ResponseEntity<List<NoticePagingDTO>> paging(@PageableDefault(page = 1) Pageable page) {
+        try{List<NoticePagingDTO> paging = noticeService.paging(page);
+        return  ResponseEntity.ok(paging);}
+        catch (Exception e){
+            return ResponseEntity.status(500).build();
         }
-        Map<String, Object> response = new HashMap<>();
-        response.put("paging", paging);
-        return ResponseEntity.ok(response);
     }
 
 }
