@@ -19,7 +19,6 @@ import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.MemberRepository;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,8 +74,6 @@ public class AttemptService {
         String image = null;
         int exitCode = 0;
         CodeStatus codeStatus = null;
-
-        System.out.println(codeRequestDTO.getCode());
         //첫 시도 입력
 
         Optional<Challenge> challenge = challengeRepository.findById(codeRequestDTO.getChallengeId());
@@ -95,7 +92,7 @@ public class AttemptService {
         //이미지 선택
 
         try(DockerClient docker = DockerClientBuilder.getInstance(DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("tcp://localhost:2375")
+                .withDockerHost("tcp://13.48.10.154:2375")
                 .withDockerTlsVerify(false)
                 .withApiVersion("1.43")
                 .withRegistryUrl("https://index.docker.io/dbwogur36/swe")

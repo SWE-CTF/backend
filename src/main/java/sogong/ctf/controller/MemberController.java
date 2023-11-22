@@ -8,7 +8,7 @@ import sogong.ctf.domain.Member;
 import sogong.ctf.dto.*;
 import sogong.ctf.service.AuthUser;
 import sogong.ctf.service.MemberService;
-import sogong.ctf.service.TeamService;
+
 import javax.xml.bind.ValidationException;
 
 @RestController
@@ -16,7 +16,6 @@ import javax.xml.bind.ValidationException;
 public class MemberController {
 
     private final MemberService memberService;
-    private final TeamService teamService;
 
     @GetMapping("/api/admin1") //삭제 예정
     public ResponseEntity joinAdmin(@RequestBody MemberRequestDTO request){
@@ -24,24 +23,6 @@ public class MemberController {
             System.out.println("hh");
             return ResponseEntity.ok(memberService.joinAdmin(request));
         }catch(Exception e){
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @GetMapping("/api/member/join") //소속 가입할때 가능한 소속 보여주기 , url 미정
-    public ResponseEntity joinForm(){
-        try{
-            return ResponseEntity.ok(teamService.findAllTeam());
-        }catch(Exception e){
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @PostMapping("/api/admin/team") //url 미정 , 소속 추가 기능
-    public ResponseEntity create(@RequestBody TeamFormDTO teamFormDTO){
-        try{
-            return ResponseEntity.ok(teamService.createTeam(teamFormDTO));
-        } catch(Exception e){
             return ResponseEntity.badRequest().build();
         }
     }

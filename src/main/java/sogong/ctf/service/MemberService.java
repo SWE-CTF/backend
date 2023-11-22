@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.config.security.JwtProvider;
+import sogong.ctf.domain.Attempt;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Role;
 import sogong.ctf.dto.*;
@@ -107,6 +108,23 @@ public class MemberService {
         int allCount = byUsername.get().getAttempts().size();
         int coCount = byUsername.get().getCount();
         int incoCount = allCount - coCount;
+
+        for (Attempt attempt : byUsername.get().getAttempts()) {
+
+            switch(attempt.getCodeStatus()){
+                case SUCCESS:
+
+                    break;
+                case FAIL:
+                case TIME:
+                case ERROR:
+                case MEMORY:
+                case READY:
+                    break;
+
+            }
+        }
+
 
         return ProfileResponseDTO.builder()
                 .attemptCount(allCount)

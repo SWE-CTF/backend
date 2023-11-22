@@ -32,9 +32,6 @@ public class Member {
     @ColumnDefault("0")
     private int count;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
-    private Team team;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -50,10 +47,6 @@ public class Member {
         this.email = email;
         this.nickname = nickname;
         this.role = role;
-    }
-
-    public void joinTeam(Team team){
-        this.team = team;
     }
 
     public void addAttempt(Attempt attempt){this.attempts.add(attempt);}
