@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sogong.ctf.domain.Category;
 import sogong.ctf.domain.Challenge;
-import sogong.ctf.dto.CategoryListDTO;
+import sogong.ctf.dto.response.CategoryListDTO;
 import sogong.ctf.repository.CategoryRepository;
 import sogong.ctf.repository.ChallengeRepository;
 

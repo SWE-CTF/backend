@@ -1,4 +1,4 @@
-package sogong.ctf.dto;
+package sogong.ctf.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
