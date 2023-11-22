@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Question;
-import sogong.ctf.dto.MemberRequestDTO;
-import sogong.ctf.dto.QuestionResponseDTO;
-import sogong.ctf.dto.QuestionSaveDTO;
+import sogong.ctf.dto.request.MemberRequestDTO;
+import sogong.ctf.dto.response.QuestionResponseDTO;
+import sogong.ctf.dto.request.QuestionSaveDTO;
 import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.QuestionRepository;
 
@@ -44,15 +44,9 @@ class QuestionServiceTest {
         Long test2 = memberService.join(new MemberRequestDTO("test2", "test", "test", "test", "test"));
         member1 = memberService.findMemberById(test1);
         member2 = memberService.findMemberById(test2);
-        challenge = new Challenge("question", "question", 1.0f, 1.0f, member1);
+        challenge = new Challenge("question", "question",null, 1.0f, 1.0f, member1,null,false);
         challengeRepository.save(challenge);
     }
-
-   /* @AfterEach
-    void deleteMember() {
-    memberRepository.deleteAll();
-    }*/
-
     @Test
     @DisplayName("글 저장")
     void save() {

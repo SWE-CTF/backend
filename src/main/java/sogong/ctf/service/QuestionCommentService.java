@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.Comment;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Question;
-import sogong.ctf.dto.CommentResponseDTO;
+import sogong.ctf.dto.response.CommentResponseDTO;
 import sogong.ctf.repository.CommentRepository;
 
 import java.time.LocalDateTime;
