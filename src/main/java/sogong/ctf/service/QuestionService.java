@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -106,10 +107,13 @@ public class QuestionService {
 
     public List<QuestionPagingDTO> getAllQuestion() {
         List<Question> all = questionRepository.findAll();
-        List<QuestionPagingDTO> list = new ArrayList<>();
-        for (Question question : all) {
-            list.add(QuestionPagingDTO.toDTO(question));
-        }
-        return list;
+        return all.stream()
+                .map(question -> QuestionPagingDTO.builder()
+                        .title(question.getTitle())
+                        .questionId(question.getId())
+                        .writeTime(question.getWriteTime())
+                        .nickname(question.getMemberId().getNickname())
+                        .build()
+                ).collect(Collectors.toList());
     }
 }
