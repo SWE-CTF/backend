@@ -1,4 +1,4 @@
-package sogong.ctf.dto;
+package sogong.ctf.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileResponseDTO {
-    private int attemptCount;
-    private int correctCount;
-    private int incorrectCount;
+public class ProfilePostNotPWDTO {
+    private String nickname;
+    private String currentPW;
 }

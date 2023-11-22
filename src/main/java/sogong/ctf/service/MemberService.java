@@ -10,10 +10,10 @@ import sogong.ctf.config.security.JwtProvider;
 import sogong.ctf.domain.Attempt;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Role;
-import sogong.ctf.dto.*;
 import sogong.ctf.dto.request.MemberRequestDTO;
-import sogong.ctf.dto.response.MemberResponseDTO;
-import sogong.ctf.dto.response.TokenDTO;
+import sogong.ctf.dto.request.ProfilePostDTO;
+import sogong.ctf.dto.request.ProfilePostNotPWDTO;
+import sogong.ctf.dto.response.*;
 import sogong.ctf.repository.MemberRepository;
 
 import java.security.NoSuchProviderException;

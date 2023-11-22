@@ -6,9 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import sogong.ctf.dto.MemberResponseDTO;
-import sogong.ctf.dto.ProfilePostDTO;
-import sogong.ctf.dto.ProfilePostNotPWDTO;
+import sogong.ctf.dto.request.ProfilePostDTO;
+import sogong.ctf.dto.request.ProfilePostNotPWDTO;
 
 import javax.persistence.*;
 import java.util.ArrayList;

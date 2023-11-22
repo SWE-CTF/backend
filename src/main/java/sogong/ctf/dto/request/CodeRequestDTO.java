@@ -1,6 +1,6 @@
-package sogong.ctf.dto;
+package sogong.ctf.dto.request;
 
-
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -8,9 +8,9 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class CodeResponseDTO {
+@Data
+public class CodeRequestDTO {
     private String language;
     private String code;
-    private float memory;
-    private float time;
+    private Long challengeId;
 }

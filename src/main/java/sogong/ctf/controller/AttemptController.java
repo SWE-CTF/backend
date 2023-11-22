@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Member;
-import sogong.ctf.dto.CodeRequestDTO;
+import sogong.ctf.dto.request.CodeRequestDTO;
 import sogong.ctf.service.AttemptService;
 import sogong.ctf.service.AuthUser;
 
