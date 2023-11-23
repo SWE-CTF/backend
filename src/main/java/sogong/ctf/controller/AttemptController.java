@@ -35,12 +35,11 @@ public class AttemptController {
     }
 
     @GetMapping("/api/challenge/{challengeId}/attempt")
-    public ResponseEntity getChallengeAttempts(@PathVariable("challengeId") Long challengeId){
+    public ResponseEntity getChallengeAttempts(@PathVariable("challengeId") int challengeId){
         try{
             return ResponseEntity.ok(attemptService.getChallengeAttempt(challengeId));
         }catch(Exception e){
             return ResponseEntity.notFound().build();
         }
     }
-
 }

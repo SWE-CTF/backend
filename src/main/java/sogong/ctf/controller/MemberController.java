@@ -9,7 +9,6 @@ import sogong.ctf.dto.request.MemberRequestDTO;
 import sogong.ctf.dto.request.ProfilePostDTO;
 import sogong.ctf.service.AuthUser;
 import sogong.ctf.service.MemberService;
-
 import javax.xml.bind.ValidationException;
 
 @RestController
@@ -70,6 +69,15 @@ public class MemberController {
     public ResponseEntity getProfile(@AuthUser Member member){
         try{
             return ResponseEntity.ok(memberService.showProfile(member));
+        }catch(Exception e){
+            return ResponseEntity.status(400).build();
+        }
+    }
+
+    @GetMapping("/api/member/profile/challenge/{challengeId}")
+    public ResponseEntity getAllChallenge(@AuthUser Member member,@PathVariable("challengeId") int challengeId){
+        try{
+            return ResponseEntity.ok(memberService.showAllChallenge(member, challengeId));
         }catch(Exception e){
             return ResponseEntity.status(400).build();
         }

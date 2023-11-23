@@ -11,7 +11,7 @@ import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Comment;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Question;
-import sogong.ctf.dto.MemberRequestDTO;
+import sogong.ctf.dto.request.MemberRequestDTO;
 import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.QuestionRepository;
 

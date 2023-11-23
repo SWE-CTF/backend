@@ -33,15 +33,14 @@ public class AttemptService {
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
 
-    public List<AttemptDTO> getChallengeAttempt(Long id) {
-        Optional<Challenge> challenge = challengeRepository.findById(id);
+    public List<AttemptDTO> getChallengeAttempt(int id) {
+        Optional<Challenge> challenge = challengeRepository.findById((long) id);
         return getAttemptListDTO(challenge.get().getAttempts());
     }
 
     private List<AttemptDTO> getAttemptListDTO(List<Attempt> attempts) {
         return attempts.stream()
                 .map(attempt -> AttemptDTO.builder()
-                        .attemptId(attempt.getId())
                         .code(attempt.getCode())
                         .codeStatus(attempt.getCodeStatus())
                         .challengeId(attempt.getChallengeId().getId())
@@ -73,7 +72,7 @@ public class AttemptService {
         Long attemptId = saveAttempt(codeRequestDTO, member);
         String image = null;
         int exitCode = 0;
-        CodeStatus codeStatus = null;
+        CodeStatus codeStatus = CodeStatus.ERROR;
         //첫 시도 입력
 
         Optional<Challenge> challenge = challengeRepository.findById(codeRequestDTO.getChallengeId());
@@ -92,7 +91,7 @@ public class AttemptService {
         //이미지 선택
 
         try(DockerClient docker = DockerClientBuilder.getInstance(DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("tcp://13.48.10.154:2375")
+                .withDockerHost("tcp://localhost:2375")
                 .withDockerTlsVerify(false)
                 .withApiVersion("1.43")
                 .withRegistryUrl("https://index.docker.io/dbwogur36/swe")
@@ -207,6 +206,7 @@ public class AttemptService {
                             break;
                         }
                     }
+                docker.removeContainerCmd(containerId).exec();
             }
             //testcase 실행
 
