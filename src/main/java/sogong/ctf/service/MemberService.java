@@ -8,17 +8,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.config.security.JwtProvider;
 import sogong.ctf.domain.Attempt;
+import sogong.ctf.domain.CodeStatus;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Role;
 import sogong.ctf.dto.request.MemberRequestDTO;
 import sogong.ctf.dto.request.ProfilePostDTO;
 import sogong.ctf.dto.request.ProfilePostNotPWDTO;
 import sogong.ctf.dto.response.*;
+import sogong.ctf.repository.AttemptRepository;
 import sogong.ctf.repository.MemberRepository;
 
 import java.security.NoSuchProviderException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -30,6 +31,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final AttemptRepository attemptRepository;
 
     @Transactional
     public Long join(MemberRequestDTO memberRequestDTO) {
@@ -106,33 +108,50 @@ public class MemberService {
 
 
     public ProfileResponseDTO showProfile(Member member) {
-        Optional<Member> byUsername = memberRepository.findByUsername(member.getUsername());
+        Optional<Member> byUsername = memberRepository.findById(member.getId());
 
-        int allCount = byUsername.get().getAttempts().size();
-        int coCount = byUsername.get().getCount();
-        int incoCount = allCount - coCount;
 
-        for (Attempt attempt : byUsername.get().getAttempts()) {
+        Set<Long> correctChallengeId = byUsername.get().getAttempts().stream()
+                .filter(attempt -> CodeStatus.SUCCESS.equals(attempt.getCodeStatus()))
+                .map(attempt -> attempt.getChallengeId().getId())
+                .collect(Collectors.toSet());
 
-            switch(attempt.getCodeStatus()){
-                case SUCCESS:
+        Set<Long> allChallengeId = byUsername.get().getAttempts().stream()
+                .map(attempt -> attempt.getChallengeId().getId())
+                .collect(Collectors.toSet());
 
-                    break;
-                case FAIL:
-                case TIME:
-                case ERROR:
-                case MEMORY:
-                case READY:
-                    break;
+        Set<Long> failChallengeId = allChallengeId.stream()
+                .filter(id -> !correctChallengeId.contains(id))
+                .collect(Collectors.toSet());
 
-            }
-        }
-
+        int allCount = allChallengeId.size();
+        int coCount = correctChallengeId.size();
+        int incoCount = failChallengeId.size();
 
         return ProfileResponseDTO.builder()
                 .attemptCount(allCount)
                 .correctCount(coCount)
-                .incorrectCount(incoCount).build();
+                .incorrectCount(incoCount)
+                .allChallengeId(allChallengeId)
+                .correctChallengeId(correctChallengeId)
+                .failChallengeId(failChallengeId)
+                .build();
+    }
+
+    public List<AttemptDTO> showAllChallenge(Member member, int challengeId) {
+        Optional<Member> byUsername = memberRepository.findByUsername(member.getUsername());
+
+        return byUsername.map(member1 -> member1.getAttempts().stream()
+                .filter(attempt -> attempt.getChallengeId().getId() == challengeId)
+                .map(attempt -> {
+                    AttemptDTO attemptDTO = new AttemptDTO();
+                    attemptDTO.setChallengeId(attempt.getChallengeId().getId());
+                    attemptDTO.setCode(attempt.getCode());
+                    attemptDTO.setCodeStatus(attempt.getCodeStatus());
+                    return attemptDTO;
+                })
+                .collect(Collectors.toList())
+        ).orElse(Collections.emptyList());
     }
 
     @Transactional

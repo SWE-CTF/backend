@@ -9,14 +9,12 @@ import sogong.ctf.domain.CodeStatus;
 @Data
 @Builder
 public class AttemptDTO {
-    private Long attemptId;
     private String code;
     private CodeStatus codeStatus;
     private Long challengeId;
 
     @Builder
-    public AttemptDTO(Long attemptId, String code, CodeStatus codeStatus, Long challengeId) {
-        this.attemptId = attemptId;
+    public AttemptDTO(String code, CodeStatus codeStatus, Long challengeId) {
         this.code = code;
         this.codeStatus = codeStatus;
         this.challengeId = challengeId;
