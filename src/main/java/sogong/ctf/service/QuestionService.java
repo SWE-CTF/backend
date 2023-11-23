@@ -16,10 +16,7 @@ import sogong.ctf.dto.request.QuestionSaveDTO;
 import sogong.ctf.repository.QuestionRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +24,7 @@ import java.util.stream.Collectors;
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final MemberService memberService;
+    private final ChallengeService challengeService;
 
     @Transactional
     public long save(Member member, QuestionSaveDTO saveForm, Challenge challenge) {
@@ -106,8 +104,8 @@ public class QuestionService {
     }
 
     public List<QuestionPagingDTO> getAllQuestion() {
-        List<Question> all = questionRepository.findAll();
-        return all.stream()
+        List<Question> questionList = questionRepository.findAll();
+        return questionList.stream()
                 .map(question -> QuestionPagingDTO.builder()
                         .title(question.getTitle())
                         .questionId(question.getId())
@@ -115,5 +113,17 @@ public class QuestionService {
                         .nickname(question.getMemberId().getNickname())
                         .build()
                 ).collect(Collectors.toList());
+    }
+
+    public List<QuestionPagingDTO> getQuestionsByChallengeId(long challengeId) {
+        Challenge challenge = challengeService.findByChallengeId(challengeId).get();
+        List<Question> questionList = questionRepository.findAllByChallengeId(challenge);
+        return questionList.stream().map(question -> QuestionPagingDTO.builder()
+                .title(question.getTitle())
+                .questionId(question.getId())
+                .writeTime(question.getWriteTime())
+                .nickname(question.getMemberId().getNickname())
+                .build()
+        ).collect(Collectors.toList());
     }
 }

@@ -25,7 +25,10 @@ public class QuestionController {
     private final QuestionCommentService commentService;
     private final MemberService memberService;
 
-    @PostMapping("/save")//질문 게시글 작성
+    /*
+    질문 게시글 작성
+     */
+    @PostMapping("/save")
     public ResponseEntity saveQuestion(@RequestBody QuestionSaveDTO saveForm, @AuthUser Member member) {//질문 작성
         log.info("질문 게시글 작성 요청");
         if (member.getId() == null) {
@@ -43,7 +46,21 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("/{questionId}") //질문 게시글 상세조회
+    /*
+    문제 별 질문게시글 조회
+     */
+    @GetMapping("/challenge/{challengeId}")
+    public ResponseEntity<List<QuestionPagingDTO>> getQuestionByChallengeId(@PathVariable("challengeId") int challengeId) {
+        List<QuestionPagingDTO> questions =questionService.getQuestionsByChallengeId(challengeId);
+        if(questions.size()==0)
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(questions);
+    }
+
+    /*
+    질문 게시글 상세조회
+     */
+    @GetMapping("/{questionId}")
     public ResponseEntity<QuestionResponseDTO> getQuestion(@PathVariable("questionId") int questionId) {
         QuestionResponseDTO question = questionService.getDetails(questionId);
         if (question != null) {
@@ -55,6 +72,9 @@ public class QuestionController {
         }
     }
 
+    /*
+    질문 게시글 삭제
+     */
     @DeleteMapping("/{questionId}")
     public ResponseEntity deleteQuestion(@PathVariable("questionId") int questionId, @AuthUser Member member) {
         try {
@@ -68,6 +88,9 @@ public class QuestionController {
         }
     }
 
+    /*
+    질문 게시글 수정
+     */
     @PutMapping("/{questionId}")
     public ResponseEntity updateQuestion(@PathVariable("questionId") int questionId, @RequestBody QuestionSaveDTO questionupdateDTO, @AuthUser Member member) {
         try {
@@ -81,6 +104,9 @@ public class QuestionController {
         }
     }
 
+    /*
+    질문 게시글 페이징
+     */
     @GetMapping("/paging")
     public ResponseEntity<List<QuestionPagingDTO>> AllPage() {
         List<QuestionPagingDTO> list = questionService.getAllQuestion();
