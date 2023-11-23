@@ -2,6 +2,7 @@ package sogong.ctf.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sogong.ctf.domain.Challenge;
@@ -21,9 +22,11 @@ import java.util.UUID;
 @Slf4j
 public class FileService {
     private final ChallengeFileRepository challengeFileRepository;
-    private final String path = "C://Users//오주은//Desktop//학교//3-2//소공//challengeImg";
+    @Value("${user.file.path}")
+    private  String path;
 
     public void save(List<MultipartFile> files, Challenge challenge) {
+        System.out.println(path);
         System.out.println(files.size());
         for (MultipartFile file : files) {
             String storedFileName = createStoredFileName(file);
