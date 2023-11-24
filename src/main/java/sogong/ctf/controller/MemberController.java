@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Member;
 import sogong.ctf.dto.request.MemberRequestDTO;
-import sogong.ctf.dto.request.ProfileCheckDTO;
 import sogong.ctf.dto.request.ProfilePostDTO;
 import sogong.ctf.service.AuthUser;
 import sogong.ctf.service.MemberService;
@@ -93,10 +92,10 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/api/member/profile/check/nickname")
-    public ResponseEntity checkNickName(@RequestBody ProfileCheckDTO profileCheckDTO){
+    @GetMapping("/api/member/profile/check/{nickname}")
+    public ResponseEntity checkNickName(@PathVariable String nickname){
         try{
-            return ResponseEntity.ok(memberService.checkNickname(profileCheckDTO));
+            return ResponseEntity.ok(memberService.checkNickname(nickname));
         }catch (Exception e){
             return ResponseEntity.status(400).build();
         }
