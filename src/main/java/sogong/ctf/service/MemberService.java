@@ -7,16 +7,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.config.security.JwtProvider;
-import sogong.ctf.domain.Attempt;
 import sogong.ctf.domain.CodeStatus;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Role;
 import sogong.ctf.dto.request.MemberRequestDTO;
-import sogong.ctf.dto.request.ProfileCheckDTO;
 import sogong.ctf.dto.request.ProfilePostDTO;
 import sogong.ctf.dto.request.ProfilePostNotPWDTO;
 import sogong.ctf.dto.response.*;
-import sogong.ctf.repository.AttemptRepository;
 import sogong.ctf.repository.MemberRepository;
 
 import java.security.NoSuchProviderException;
@@ -198,8 +195,8 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
-    public boolean checkNickname(ProfileCheckDTO profileCheckDTO) {
-        Optional<Member> byNickname = memberRepository.findByNickname(profileCheckDTO.getNickname());
+    public boolean checkNickname(String nickname) {
+        Optional<Member> byNickname = memberRepository.findByNickname(nickname);
         if (!byNickname.isEmpty())
             throw new IllegalStateException("nickname duplicate");
         return true;
