@@ -17,10 +17,10 @@ public class Comment {
     private long id;
     private String content;
     private LocalDateTime writeTime;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer")
     private Member writer;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     //@OnDelete(action = OnDeleteAction.CASCADE)
     private Question questionId;

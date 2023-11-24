@@ -21,11 +21,11 @@ public class Challenge {
     private float memory;
     private float time;
     private String hint;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "examiner")
     private Member examiner;//출제자
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category categoryId;
     private boolean fileExist;

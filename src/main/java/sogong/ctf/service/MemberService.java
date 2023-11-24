@@ -12,6 +12,7 @@ import sogong.ctf.domain.CodeStatus;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Role;
 import sogong.ctf.dto.request.MemberRequestDTO;
+import sogong.ctf.dto.request.ProfileCheckDTO;
 import sogong.ctf.dto.request.ProfilePostDTO;
 import sogong.ctf.dto.request.ProfilePostNotPWDTO;
 import sogong.ctf.dto.response.*;
@@ -31,7 +32,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
-    private final AttemptRepository attemptRepository;
 
     @Transactional
     public Long join(MemberRequestDTO memberRequestDTO) {
@@ -196,5 +196,12 @@ public class MemberService {
                 .build();
 
         return memberRepository.save(member).getId();
+    }
+
+    public boolean checkNickname(ProfileCheckDTO profileCheckDTO) {
+        Optional<Member> byNickname = memberRepository.findByNickname(profileCheckDTO.getNickname());
+        if (!byNickname.isEmpty())
+            throw new IllegalStateException("nickname duplicate");
+        return true;
     }
 }

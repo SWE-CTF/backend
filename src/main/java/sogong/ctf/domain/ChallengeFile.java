@@ -16,7 +16,7 @@ public class ChallengeFile {
     private long id;
     private String originalFileName;
     private String storedFileName;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id")
     private Challenge challengeId;
 
