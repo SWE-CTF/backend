@@ -110,7 +110,7 @@ public class AttemptService {
             }
             //이미지 종류 선택 필요
 
-            for (int i = 0; i < testCaseList.size(); i++) {
+            for (int i = 0; i < 3; i++) {
 
                 String arg = testCaseList.get(i).getInput();
                 String expOutput = testCaseList.get(i).getOutput();

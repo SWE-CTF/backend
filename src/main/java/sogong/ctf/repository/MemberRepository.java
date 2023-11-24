@@ -13,4 +13,5 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     @Query("SELECT t FROM Member t ORDER BY t.count DESC")
     List<Member> findAllOrderByCount();
 
+    Optional<Member> findByNickname(String nickname);
 }

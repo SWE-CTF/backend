@@ -20,6 +20,7 @@ public class Attempt {
     @JoinColumn(name = "member_id")
     private Member memberId;
 
+    @Column(columnDefinition = "Text")
     private String code;
 
     @Enumerated(EnumType.STRING)

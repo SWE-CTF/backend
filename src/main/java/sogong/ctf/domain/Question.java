@@ -16,11 +16,11 @@ public class Question extends Post {
     @Column(name = "question_id")
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id")
     private Challenge challengeId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "adopted_comment")
     private Comment adoptedComment;
 

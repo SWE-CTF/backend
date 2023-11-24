@@ -14,9 +14,12 @@ public class TestCase {
     @Column(name = "case_id")
     private Long id;
 
+    @Column(columnDefinition = "Text")
     private String input;
+    @Column(columnDefinition = "Text")
     private String output;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id")
     private Challenge challengeId;
 
