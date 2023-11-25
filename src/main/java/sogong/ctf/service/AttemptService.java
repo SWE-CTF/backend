@@ -7,6 +7,7 @@ import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.LogContainerResultCallback;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,17 @@ public class AttemptService {
     private final AttemptRepository attemptRepository;
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
+
+    @Value("${user.docker.id}")
+    String dockerId;
+    @Value("${user.docker.pw}")
+    String dockerPw;
+    @Value("${server.docker.url}")
+    String dockerUrl;
+    @Value("${server.docker.apiVersion}")
+    String apiVersion;
+    @Value("${server.docker.host}")
+    String host;
 
     public List<AttemptDTO> getChallengeAttempt(int id) {
         Optional<Challenge> challenge = challengeRepository.findById((long) id);
@@ -83,22 +95,21 @@ public class AttemptService {
         float memory = challenge.get().getMemory();
         float time = challenge.get().getTime();
 
-        float memoryLimit = memory * 1024 * 1024;
-        float timeLimit = time;
+        float memoryLimit = memory * 1024 * 1024; //MB
+        float timeLimit = time; //s
 
         //이미지 선택
         image = getDockerImage(codeRequestDTO.getLanguage());
         //이미지 선택
 
         try(DockerClient docker = DockerClientBuilder.getInstance(DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("tcp://localhost:2375")
+                .withDockerHost(host)
                 .withDockerTlsVerify(false)
-                .withApiVersion("1.43")
-                .withRegistryUrl("https://index.docker.io/dbwogur36/swe")
-                .withRegistryUsername("dbwogur36")
-                .withRegistryPassword("Alzlsj3748435@")
+                .withApiVersion(apiVersion)
+                .withRegistryUrl(dockerUrl)
+                .withRegistryUsername(dockerId)
+                .withRegistryPassword(dockerPw)
                 .build()).build()) {
-
 
             //이미지 종류 선택 필요
             try {
@@ -206,7 +217,7 @@ public class AttemptService {
                             break;
                         }
                     }
-                docker.removeContainerCmd(containerId).exec();
+                    docker.removeContainerCmd(containerId).exec();
             }
             //testcase 실행
 
