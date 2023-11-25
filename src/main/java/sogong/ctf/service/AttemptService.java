@@ -88,7 +88,7 @@ public class AttemptService {
         //첫 시도 입력
 
         Optional<Challenge> challenge = challengeRepository.findById(codeRequestDTO.getChallengeId());
-        List<TestCase> testCaseList = challenge.get().getTestCaseList();
+        List<TestCase> testCaseList = challenge.get().getTestcases();
         //해당 문제에서 testcase
         Optional<Member> member1 = memberRepository.findByUsername(member.getUsername());
 
