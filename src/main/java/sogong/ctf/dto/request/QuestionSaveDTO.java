@@ -1,15 +1,17 @@
 package sogong.ctf.dto.request;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
-@RequiredArgsConstructor
+import javax.validation.constraints.NotNull;
+
 @Getter
-
+@NoArgsConstructor
 public class QuestionSaveDTO {
+    @NotNull
     private String title;
+    @NotNull
     private String content;
+    @NotNull
     private long challengeId;
 
     @Builder
