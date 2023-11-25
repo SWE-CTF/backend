@@ -68,7 +68,6 @@ public class ChallengeController {
     public ResponseEntity<ChallengeResponseDTO> getChallenge(@PathVariable("challengeId") int challengeId) {
         try {
             ChallengeResponseDTO details = challengeService.getDetails(challengeId);
-
             return ResponseEntity.ok(details);
 
         } catch (NoSuchElementException e) {
@@ -97,7 +96,24 @@ public class ChallengeController {
     }
 
     /*
-   keyword로 시작하는 문제 제목 검색
+    문제 수정
+     */
+    @PutMapping("{challengeId}")
+    public ResponseEntity updateChallenge(@PathVariable("challengeId") int challengeId,
+                                          @RequestPart("saveForm") ChallengeSaveDTO updateForm,
+                                          @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                          @AuthUser Member member) {
+        updateForm.setFiles(files);
+        boolean update = challengeService.updateChallenge(challengeId, updateForm, member);
+        if (update) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /*
+   keyword를 포함하는 문제 제목 검색
     */
     @GetMapping("search")
     public ResponseEntity<List<ChallengeSearchDTO>> search(@RequestParam("keyword") String keyword) {

@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.Category;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
@@ -44,6 +45,7 @@ public class ChallengeService {
         return challengeRepository.findById(id);
     }
 
+    @Transactional
     public long save(ChallengeSaveDTO saveForm, Member member) {
         Category category = categoryRepository.findById(saveForm.getCategoryId()).get();
         Challenge c = Challenge.builder()
@@ -55,36 +57,36 @@ public class ChallengeService {
                 .examiner(member)
                 .fileExist(!saveForm.getFiles().isEmpty())
                 .build();
-        Challenge save = challengeRepository.save(c);
-        testcase(saveForm, save);
+        Challenge savedChallenge = challengeRepository.save(c);
+        saveTestCase(saveForm, savedChallenge);
 
         if (saveForm.getFiles() != null) {
-            challengeFileService.save(saveForm.getFiles(), save);
+            challengeFileService.save(saveForm.getFiles(), savedChallenge);
         }
-        return save.getId();
+        return savedChallenge.getId();
     }
 
-    private void testcase(ChallengeSaveDTO saveForm, Challenge save) {
+    private void saveTestCase(ChallengeSaveDTO saveForm, Challenge challenge) {
         TestCase case1 = TestCase.builder().input(saveForm.getInput1())
                 .output(saveForm.getOutput1())
-                .challengeId(save)
+                .challengeId(challenge)
                 .build();
         TestCase case2 = TestCase.builder().input(saveForm.getInput1())
                 .output(saveForm.getOutput1())
-                .challengeId(save)
+                .challengeId(challenge)
                 .build();
 
         TestCase case3 = TestCase.builder().input(saveForm.getInput1())
                 .output(saveForm.getOutput1())
-                .challengeId(save)
+                .challengeId(challenge)
                 .build();
         testCaseRepository.save(case1);
         testCaseRepository.save(case2);
         testCaseRepository.save(case3);
 
-        save.addTestCase(case1);
-        save.addTestCase(case2);
-        save.addTestCase(case3);
+        challenge.addTestCase(case1);
+        challenge.addTestCase(case2);
+        challenge.addTestCase(case3);
     }
 
     public List<ChallengeSearchDTO> search(String keyword) {
@@ -119,6 +121,7 @@ public class ChallengeService {
         return caseDTOS;
     }
 
+    @Transactional
     public void deleteChallenge(long challengeId) {
         Challenge challenge = findByChallengeId(challengeId).get();
         challengeRepository.delete(challenge);
@@ -127,5 +130,28 @@ public class ChallengeService {
     public long findExaminer(long challengeId) {
         Challenge challenge = findByChallengeId(challengeId).get();
         return challenge.getExaminer().getId();
+    }
+
+    @Transactional
+    public boolean updateChallenge(long challengeId, ChallengeSaveDTO updateForm, Member member) {
+        long examiner = findExaminer(challengeId);
+        if (examiner == member.getId()) {
+            Challenge challenge = findByChallengeId(challengeId).get();
+            challenge.update(updateForm);
+
+            if (challenge.isFileExist()) {
+                challengeFileService.deleteFile(challenge); //기존 파일 모두 삭제
+                if (updateForm.getFiles() != null) {
+                    challengeFileService.save(updateForm.getFiles(), challenge);//수정된 파일 저장
+                    challenge.changeFileExist(true);
+                } else challenge.changeFileExist(false); //수정 후 파일 없을 경우
+            }
+
+            testCaseRepository.deleteAllByChallengeId(challenge);//기존 테스트 케이스 모두 삭제
+            saveTestCase(updateForm, challenge);
+
+            return true;
+        } else //문제 출제자가 아닌 사용자가 삭제하려는 경우
+            return false;
     }
 }
