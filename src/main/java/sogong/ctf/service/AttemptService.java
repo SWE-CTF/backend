@@ -20,6 +20,8 @@ import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.MemberRepository;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,10 +79,11 @@ public class AttemptService {
 
     @Transactional
     @Async
-    public void compileAndRun(CodeRequestDTO codeRequestDTO, Member member) {
+    public void compileAndRun(CodeRequestDTO codeRequestDTO, Member member) throws UnsupportedEncodingException {
 
 
-        String userCode = codeRequestDTO.getCode();
+        String userCode = URLDecoder.decode(codeRequestDTO.getCode(),"UTF-8");
+        codeRequestDTO.setCode(userCode);
         Long attemptId = saveAttempt(codeRequestDTO, member);
         String image = null;
         int exitCode = 0;
