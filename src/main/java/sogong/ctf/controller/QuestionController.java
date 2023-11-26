@@ -12,6 +12,7 @@ import sogong.ctf.dto.response.QuestionResponseDTO;
 import sogong.ctf.dto.request.QuestionSaveDTO;
 import sogong.ctf.service.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class QuestionController {
     질문 게시글 작성
      */
     @PostMapping("/save")
-    public ResponseEntity saveQuestion(@RequestBody QuestionSaveDTO saveForm, @AuthUser Member member) {//질문 작성
+    public ResponseEntity saveQuestion(@RequestBody @Valid QuestionSaveDTO saveForm, @AuthUser Member member) {//질문 작성
         log.info("질문 게시글 작성 요청");
         if (member.getId() == null) {
             return ResponseEntity.status(403).build();
@@ -41,6 +42,7 @@ public class QuestionController {
                 questionService.save(member, saveForm, findChallenge.get());//질문 저장
                 return ResponseEntity.ok().build();
             } catch (Exception e) {
+                log.error(e.getMessage());
                 return ResponseEntity.internalServerError().build();
             }
         }
@@ -68,7 +70,7 @@ public class QuestionController {
             question.setCommentList(commentList);
             return ResponseEntity.ok(question);
         } else {
-            return ResponseEntity.status(400).build();
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -84,6 +86,7 @@ public class QuestionController {
                 return ResponseEntity.status(403).build();
             }
         } catch (Exception e) {
+            log.error(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -100,6 +103,7 @@ public class QuestionController {
                 return ResponseEntity.status(403).build();
             }
         } catch (Exception e) {
+            log.error(e.getMessage());
             return ResponseEntity.internalServerError().build();
         }
     }
