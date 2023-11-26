@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.ChallengeFile;
@@ -23,11 +24,10 @@ import java.util.UUID;
 public class FileService {
     private final ChallengeFileRepository challengeFileRepository;
     @Value("${user.file.path}")
-    private  String path;
+    private String path;
 
+    @Transactional
     public void save(List<MultipartFile> files, Challenge challenge) {
-        System.out.println(path);
-        System.out.println(files.size());
         for (MultipartFile file : files) {
             String storedFileName = createStoredFileName(file);
             ChallengeFile f = ChallengeFile.builder().originalFileName(file.getOriginalFilename())
@@ -35,7 +35,7 @@ public class FileService {
                     .challengeId(challenge)
                     .build();
             try {
-                file.transferTo(new File(path +"//"+ storedFileName));
+                file.transferTo(new File(path + "//" + storedFileName));
             } catch (IOException e) {
                 log.error("파일 저장 실패");
             }
@@ -53,17 +53,22 @@ public class FileService {
         return file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
     }
 
-    public List<byte[]> getFiles(Challenge challengeId){
+    public List<byte[]> getFiles(Challenge challengeId) {
         List<ChallengeFile> allByChallengeId = challengeFileRepository.findAllByChallengeId(challengeId);
         List<byte[]> files = new ArrayList<>();
         for (ChallengeFile challengeFile : allByChallengeId) {
-            try(InputStream inputStream = new FileInputStream(path+"//"+challengeFile.getStoredFileName())){
+            try (InputStream inputStream = new FileInputStream(path + "//" + challengeFile.getStoredFileName())) {
                 byte[] byteArr = inputStream.readAllBytes();
                 files.add(byteArr);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return files;
+    }
+
+    @Transactional
+    public void deleteFile(Challenge challenge) {
+        challengeFileRepository.deleteAllByChallengeId(challenge);
     }
 }

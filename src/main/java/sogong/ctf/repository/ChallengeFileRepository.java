@@ -6,6 +6,8 @@ import sogong.ctf.domain.ChallengeFile;
 
 import java.util.List;
 
-public interface ChallengeFileRepository extends JpaRepository<ChallengeFile,Long> {
+public interface ChallengeFileRepository extends JpaRepository<ChallengeFile, Long> {
     List<ChallengeFile> findAllByChallengeId(Challenge challenge);
+
+    void deleteAllByChallengeId(Challenge challenge);
 }

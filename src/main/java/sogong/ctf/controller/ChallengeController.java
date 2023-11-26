@@ -16,6 +16,7 @@ import sogong.ctf.service.AuthUser;
 import sogong.ctf.service.CategoryService;
 import sogong.ctf.service.ChallengeService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -50,7 +51,7 @@ public class ChallengeController {
     문제 출제
      */
     @PostMapping("/save")
-    public ResponseEntity saveChallenge(@RequestPart("saveForm") ChallengeSaveDTO saveForm,
+    public ResponseEntity saveChallenge(@RequestPart("saveForm") @Valid ChallengeSaveDTO saveForm,
                                         @RequestPart(value = "files", required = false) List<MultipartFile> files, @AuthUser Member member) {
         try {
             saveForm.setFiles(files);
@@ -68,13 +69,12 @@ public class ChallengeController {
     public ResponseEntity<ChallengeResponseDTO> getChallenge(@PathVariable("challengeId") int challengeId) {
         try {
             ChallengeResponseDTO details = challengeService.getDetails(challengeId);
-
             return ResponseEntity.ok(details);
 
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -97,7 +97,24 @@ public class ChallengeController {
     }
 
     /*
-   keyword로 시작하는 문제 제목 검색
+    문제 수정
+     */
+    @PutMapping("{challengeId}")
+    public ResponseEntity updateChallenge(@PathVariable("challengeId") int challengeId,
+                                          @RequestPart("saveForm") ChallengeSaveDTO updateForm,
+                                          @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                          @AuthUser Member member) {
+        updateForm.setFiles(files);
+        boolean update = challengeService.updateChallenge(challengeId, updateForm, member);
+        if (update) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /*
+   keyword를 포함하는 문제 제목 검색
     */
     @GetMapping("search")
     public ResponseEntity<List<ChallengeSearchDTO>> search(@RequestParam("keyword") String keyword) {

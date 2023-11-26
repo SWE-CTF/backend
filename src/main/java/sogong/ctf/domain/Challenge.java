@@ -1,6 +1,7 @@
 package sogong.ctf.domain;
 
 import lombok.*;
+import sogong.ctf.dto.request.ChallengeSaveDTO;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Challenge {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "challenge_id")
     private Long id;
     private String title;
@@ -34,21 +35,18 @@ public class Challenge {
     private List<Attempt> attempts = new ArrayList<>();
 
     @OneToMany(mappedBy = "challengeId")
-    private List<TestCase> testCaseList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "challengeId")
     private List<TestCase> testcases = new ArrayList<>();
 
     @Builder
-    public Challenge(String title, String content,Category categoryId, float memory, float time, Member examiner, String hint,boolean fileExist) {
+    public Challenge(String title, String content, Category categoryId, float memory, float time, Member examiner, String hint, boolean fileExist) {
         this.title = title;
         this.content = content;
-        this.categoryId=categoryId;
+        this.categoryId = categoryId;
         this.memory = memory;
         this.time = time;
         this.examiner = examiner;
         this.hint = hint;
-        this.fileExist=fileExist;
+        this.fileExist = fileExist;
     }
 
     public void addAttempt(Attempt attempt) {
@@ -58,8 +56,20 @@ public class Challenge {
     public void addTestCase(TestCase testCase) {
         this.testcases.add(testCase);
     }
-    public void changeFileExist(boolean fileExist){
-        this.fileExist=fileExist;
+
+    public void changeFileExist(boolean fileExist) {
+        this.fileExist = fileExist;
     }
-    public void addCorrectCnt(){this.correctCnt++;}
+
+    public void addCorrectCnt() {
+        this.correctCnt++;
+    }
+
+    public void update(ChallengeSaveDTO updateForm) {
+        this.title = updateForm.getTitle();
+        this.content = updateForm.getContent();
+        this.hint = updateForm.getHint();
+        this.memory = updateForm.getMemory();
+        this.time = updateForm.getTime();
+    }
 }
