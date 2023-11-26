@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import sogong.ctf.domain.Challenge;
-import sogong.ctf.domain.Comment;
-import sogong.ctf.domain.Member;
-import sogong.ctf.domain.Question;
+import sogong.ctf.domain.*;
 import sogong.ctf.dto.request.MemberRequestDTO;
 import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.QuestionRepository;
@@ -41,7 +38,7 @@ class CommentServiceTest {
         member1 = memberService.findMemberById(test1);
         member2 = memberService.findMemberById(test2);
         //문제 저장
-        Challenge challenge = new Challenge("challenge", "content", 1.0f, 1.0f, member1);
+        Challenge challenge = new Challenge("challenge", "content", new Category("category"),1.0f, 1.0f, member1,"hint",false);
         challengeRepository.save(challenge);
         //질문 저장
         question = new Question("question","content", challenge,member1, LocalDateTime.now());
