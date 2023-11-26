@@ -84,16 +84,12 @@ public class ChallengeController {
      */
     @DeleteMapping("/{challengeId}")
     public ResponseEntity deleteChallenge(@PathVariable("challengeId") int challengeId, @AuthUser Member member) {
-        long examinerId = challengeService.findExaminer(challengeId);
-        if (examinerId != member.getId()) {
-            return ResponseEntity.status(403).build();//출제자와 삭제하려는 사용자가 다른 경우
-        }
-        try {
-            challengeService.deleteChallenge(challengeId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        boolean delete = challengeService.deleteChallenge(challengeId, member);
+        if(delete){
+            return ResponseEntity.noContent().build();
+        }else //출제자가 아닌 사용자가 삭제하려는 경우
+            return ResponseEntity.status(403).build();
+
     }
 
     /*
