@@ -16,6 +16,7 @@ import sogong.ctf.service.AuthUser;
 import sogong.ctf.service.CategoryService;
 import sogong.ctf.service.ChallengeService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -50,7 +51,7 @@ public class ChallengeController {
     문제 출제
      */
     @PostMapping("/save")
-    public ResponseEntity saveChallenge(@RequestPart("saveForm") ChallengeSaveDTO saveForm,
+    public ResponseEntity saveChallenge(@RequestPart("saveForm") @Valid ChallengeSaveDTO saveForm,
                                         @RequestPart(value = "files", required = false) List<MultipartFile> files, @AuthUser Member member) {
         try {
             saveForm.setFiles(files);
@@ -73,7 +74,7 @@ public class ChallengeController {
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }

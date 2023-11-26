@@ -5,24 +5,35 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
 
 public class ChallengeSaveDTO {
+    @NotNull
     private String title;
+    @NotNull
     private String content;
     private long categoryId;
+    @NotNull
     private float time;
+    @NotNull
     private float memory;
     private List<MultipartFile> files;
     private String hint;
+    @NotNull
     private String input1;
+    @NotNull
     private String output1;
+    @NotNull
     private String input2;
+    @NotNull
     private String output2;
+    @NotNull
     private String input3;
+    @NotNull
     private String output3;
 
     @Builder
