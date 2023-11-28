@@ -8,9 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -49,12 +46,15 @@ public class SecurityConfig {
 
 
         http.authorizeRequests()
-                .antMatchers("/oauth2/authorization/google").permitAll()
-                .antMatchers("/api/member/logout").hasAnyRole("MEMBER","ADMIN") //로그아웃 기능은 로그인해서 권한이 있을때만 가능
-                .antMatchers("/api/admin/**").hasRole("ADMIN") //어드민만 가능한 페이지
-                .antMatchers("/api/member/**").permitAll()
+                .antMatchers("/api/attempt/**").hasAnyRole("MEMBER","ADMIN")
+                .antMatchers("/api/challenge/*/attempt").hasAnyRole("MEMBER","ADMIN")
+                .antMatchers("/api/challenge/save").hasAnyRole("MEMBER","ADMIN")
+                .antMatchers("/api/member/logout","/api/member/profile/**").hasAnyRole("MEMBER","ADMIN") //로그아웃 기능은 로그인해서 권한이 있을때만 가능
+                .antMatchers("/api/comment/**").hasAnyRole("MEMBER","ADMIN")
+                .antMatchers("/api/notice/save").hasAnyRole("ADMIN")
+                .antMatchers("/api/question/save").hasAnyRole("MEMBER","ADMIN")
                 .antMatchers("/api/**").permitAll() //테스트 단계라 모든 권한 허용
-                .anyRequest().permitAll() //위에서 설정한 url 제외 모든 요청 거부
+                .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
@@ -87,6 +87,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000"); // 허용할 오리진
+        //configuration.addAllowedOrigin("http://51.20.115.244:3000");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
