@@ -138,7 +138,7 @@ public class AttemptService {
                             .withCmd("sh", "-c", "echo '" + userCode + "' > /usr/src/app/Main.java && javac /usr/src/app/Main.java && timeout " + timeLimit + "s java -classpath /usr/src/app Main " + arg)
                             .withHostConfig(new HostConfig()
                                     .withMemory((long) memoryLimit)
-                                    .withMemorySwap((long) memoryLimit)
+                                    .withMemorySwap((long) memoryLimit*2)
                             );
 
                 } else if(codeRequestDTO.getLanguage().equalsIgnoreCase("python")){
@@ -168,7 +168,8 @@ public class AttemptService {
                     docker.waitContainerCmd(containerId).exec(new WaitContainerResultCallback()).awaitStatusCode();
 
                     // 컨테이너의 표준 출력을 저장할 StringBuilder
-                    StringBuilder outputResult = new StringBuilder();
+                    StringBuffer outputResult = new StringBuffer();
+                    StringBuffer errResult = new StringBuffer();
 
                     // 컨테이너 로그를 얻기 위한 코드
                     LogContainerCmd logContainerCmd = docker.logContainerCmd(containerId)
@@ -182,9 +183,10 @@ public class AttemptService {
                             if (log.startsWith("STDOUT:"))
                                 outputResult.append(log.substring(8));
                             else
-                                outputResult.append(log);
+                                errResult.append(log);
                             super.onNext(item);
                         }
+
                     };
 
                     // 컨테이너 로그 가져오기
@@ -198,6 +200,7 @@ public class AttemptService {
 
                     // 표준 출력 확인
                     System.out.println("Container output: " + outputResult.toString());
+                    System.out.println("Container errOutput : " + errResult.toString());
 
 
                     if (exitCode == 0) { //정상 종료시
