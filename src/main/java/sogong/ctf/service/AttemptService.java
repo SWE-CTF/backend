@@ -82,8 +82,7 @@ public class AttemptService {
     public void compileAndRun(CodeRequestDTO codeRequestDTO, Member member) throws UnsupportedEncodingException {
 
 
-        String userCode = URLDecoder.decode(codeRequestDTO.getCode(),"UTF-8");
-        codeRequestDTO.setCode(userCode);
+        String userCode = codeRequestDTO.getCode();
         Long attemptId = saveAttempt(codeRequestDTO, member);
         String image = null;
         int exitCode = 0;
