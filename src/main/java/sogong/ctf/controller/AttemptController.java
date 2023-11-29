@@ -53,4 +53,13 @@ public class AttemptController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/api/attempt/member/success")
+    public ResponseEntity getChallengeSuccess(@AuthUser Member member){
+        try {
+            return ResponseEntity.ok(attemptService.getChallengeSuccess(member));
+        }catch (Exception e){
+            return ResponseEntity.status(400).build();
+        }
+    }
 }

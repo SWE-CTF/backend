@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.*;
 import sogong.ctf.dto.response.AttemptDTO;
 import sogong.ctf.dto.request.CodeRequestDTO;
+import sogong.ctf.dto.response.AttemptSuccessDTO;
 import sogong.ctf.repository.AttemptRepository;
 import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.MemberRepository;
@@ -24,6 +25,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -270,6 +273,19 @@ public class AttemptService {
     public List<AttemptDTO> getMemberAttempt(Member member) {
         Optional<Member> member1 = memberRepository.findByUsername(member.getUsername());
         return getAttemptListDTO(member1.get().getAttempts());
+    }
+
+    public AttemptSuccessDTO getChallengeSuccess(Member member){
+        Optional<Member> byUsername = memberRepository.findById(member.getId());
+
+        Set<Long> correctChallengeId = byUsername.get().getAttempts().stream()
+                .filter(attempt -> CodeStatus.SUCCESS.equals(attempt.getCodeStatus()))
+                .map(attempt -> attempt.getChallengeId().getId())
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        return AttemptSuccessDTO.builder()
+                .correctChallengeId(correctChallengeId)
+                .build();
     }
 
 }
