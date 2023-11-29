@@ -8,12 +8,14 @@ import sogong.ctf.domain.Member;
 import sogong.ctf.dto.request.CodeRequestDTO;
 import sogong.ctf.service.AttemptService;
 import sogong.ctf.service.AuthUser;
+import sogong.ctf.service.MemberService;
 
 @RestController
 @RequiredArgsConstructor
 public class AttemptController {
 
     private final AttemptService attemptService;
+    private final MemberService memberService;
 
     @PostMapping("/api/attempt/challenge")
     public ResponseEntity compileCode(@AuthUser Member member, @RequestBody CodeRequestDTO codeRequestDTO){
@@ -38,6 +40,15 @@ public class AttemptController {
     public ResponseEntity getChallengeAttempts(@PathVariable("challengeId") int challengeId){
         try{
             return ResponseEntity.ok(attemptService.getChallengeAttempt(challengeId));
+        }catch(Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/api/challenge/{challengeId}/member")
+    public ResponseEntity getChallengeAttemptbyMember(@PathVariable("challengeId") int challengeId,@AuthUser Member member){
+        try{
+            return ResponseEntity.ok(memberService.showAllChallenge(member, challengeId));
         }catch(Exception e){
             return ResponseEntity.notFound().build();
         }
