@@ -111,15 +111,15 @@ public class MemberService {
         Set<Long> correctChallengeId = byUsername.get().getAttempts().stream()
                 .filter(attempt -> CodeStatus.SUCCESS.equals(attempt.getCodeStatus()))
                 .map(attempt -> attempt.getChallengeId().getId())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(TreeSet::new));
 
         Set<Long> allChallengeId = byUsername.get().getAttempts().stream()
                 .map(attempt -> attempt.getChallengeId().getId())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(TreeSet::new));
 
         Set<Long> failChallengeId = allChallengeId.stream()
                 .filter(id -> !correctChallengeId.contains(id))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(TreeSet::new));
 
         int allCount = allChallengeId.size();
         int coCount = correctChallengeId.size();
