@@ -55,7 +55,7 @@ public class ChallengeService {
                 .time(saveForm.getTime())
                 .memory(saveForm.getMemory())
                 .examiner(member)
-                .fileExist(!saveForm.getFiles().isEmpty())
+                .fileExist(!(saveForm.getFiles()==null))
                 .build();
         Challenge savedChallenge = challengeRepository.save(c);
         saveTestCase(saveForm, savedChallenge);

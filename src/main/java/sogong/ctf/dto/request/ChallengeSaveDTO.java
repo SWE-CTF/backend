@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -54,6 +55,9 @@ public class ChallengeSaveDTO {
     }
 
     public void setFiles(List<MultipartFile> files) {
+        if(files==null){
+            this.files=new ArrayList<>();
+        }
         this.files = files;
     }
 
