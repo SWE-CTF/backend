@@ -20,7 +20,17 @@ public class AttemptController {
     @PostMapping("/api/attempt/challenge")
     public ResponseEntity compileCode(@AuthUser Member member, @RequestBody CodeRequestDTO codeRequestDTO){
         try{
-            attemptService.compileAndRun(codeRequestDTO,member);
+            attemptService.compileAndRun1(codeRequestDTO,member);
+            return new ResponseEntity(HttpStatus.OK);
+        }catch(Exception e){
+            return ResponseEntity.status(400).build();
+        }
+    }
+
+    @PostMapping("/api/attempt/challenge1")
+    public ResponseEntity compileCode1(@AuthUser Member member, @RequestBody CodeRequestDTO codeRequestDTO){
+        try{
+            attemptService.compileAndRun1(codeRequestDTO, member);
             return new ResponseEntity(HttpStatus.OK);
         }catch(Exception e){
             return ResponseEntity.status(400).build();
