@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.*;
 import sogong.ctf.dto.response.AttemptDTO;
 import sogong.ctf.dto.request.CodeRequestDTO;
+import sogong.ctf.dto.response.AttemptSuccessDTO;
 import sogong.ctf.repository.AttemptRepository;
 import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.MemberRepository;
@@ -24,6 +25,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -138,7 +141,7 @@ public class AttemptService {
                             .withCmd("sh", "-c", "echo '" + userCode + "' > /usr/src/app/Main.java && javac /usr/src/app/Main.java && timeout " + timeLimit + "s java -classpath /usr/src/app Main " + arg)
                             .withHostConfig(new HostConfig()
                                     .withMemory((long) memoryLimit)
-                                    .withMemorySwap((long) memoryLimit)
+                                    .withMemorySwap((long) memoryLimit*2)
                             );
 
                 } else if(codeRequestDTO.getLanguage().equalsIgnoreCase("python")){
@@ -168,7 +171,8 @@ public class AttemptService {
                     docker.waitContainerCmd(containerId).exec(new WaitContainerResultCallback()).awaitStatusCode();
 
                     // 컨테이너의 표준 출력을 저장할 StringBuilder
-                    StringBuilder outputResult = new StringBuilder();
+                    StringBuffer outputResult = new StringBuffer();
+                    StringBuffer errResult = new StringBuffer();
 
                     // 컨테이너 로그를 얻기 위한 코드
                     LogContainerCmd logContainerCmd = docker.logContainerCmd(containerId)
@@ -182,9 +186,10 @@ public class AttemptService {
                             if (log.startsWith("STDOUT:"))
                                 outputResult.append(log.substring(8));
                             else
-                                outputResult.append(log);
+                                errResult.append(log);
                             super.onNext(item);
                         }
+
                     };
 
                     // 컨테이너 로그 가져오기
@@ -198,6 +203,7 @@ public class AttemptService {
 
                     // 표준 출력 확인
                     System.out.println("Container output: " + outputResult.toString());
+                    System.out.println("Container errOutput : " + errResult.toString());
 
 
                     if (exitCode == 0) { //정상 종료시
@@ -267,6 +273,19 @@ public class AttemptService {
     public List<AttemptDTO> getMemberAttempt(Member member) {
         Optional<Member> member1 = memberRepository.findByUsername(member.getUsername());
         return getAttemptListDTO(member1.get().getAttempts());
+    }
+
+    public AttemptSuccessDTO getChallengeSuccess(Member member){
+        Optional<Member> byUsername = memberRepository.findById(member.getId());
+
+        Set<Long> correctChallengeId = byUsername.get().getAttempts().stream()
+                .filter(attempt -> CodeStatus.SUCCESS.equals(attempt.getCodeStatus()))
+                .map(attempt -> attempt.getChallengeId().getId())
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        return AttemptSuccessDTO.builder()
+                .correctChallengeId(correctChallengeId)
+                .build();
     }
 
 }
