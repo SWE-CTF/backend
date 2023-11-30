@@ -55,6 +55,7 @@ public class ChallengeService {
                 .time(saveForm.getTime())
                 .memory(saveForm.getMemory())
                 .examiner(member)
+                .hint(saveForm.getHint())
                 .fileExist(!saveForm.getFiles().isEmpty())
                 .build();
         Challenge savedChallenge = challengeRepository.save(c);
