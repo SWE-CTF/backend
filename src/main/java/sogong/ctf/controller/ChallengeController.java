@@ -58,6 +58,7 @@ public class ChallengeController {
             challengeService.save(saveForm, member);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }

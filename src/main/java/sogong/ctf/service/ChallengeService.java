@@ -55,8 +55,8 @@ public class ChallengeService {
                 .time(saveForm.getTime())
                 .memory(saveForm.getMemory())
                 .examiner(member)
-                .hint(saveForm.getHint())
-                .fileExist(!saveForm.getFiles().isEmpty())
+                .hint((saveForm.getHint()==null)?"":saveForm.getHint())
+                .fileExist(saveForm.getFiles() != null)
                 .build();
         Challenge savedChallenge = challengeRepository.save(c);
         saveTestCase(saveForm, savedChallenge);
@@ -115,7 +115,7 @@ public class ChallengeService {
     private List<TestCaseDTO> findTestCases(Challenge findChallenge) {
         List<TestCase> testcases = testCaseRepository.findAllByChallengeId(findChallenge);
         List<TestCaseDTO> caseDTOS = new ArrayList<>();
-        for (int i=0;i<2;i++) {
+        for (int i = 0; i < 2; i++) {
             TestCaseDTO dto = new TestCaseDTO(testcases.get(i).getInput(), testcases.get(i).getOutput());
             caseDTOS.add(dto);
         }
@@ -123,9 +123,13 @@ public class ChallengeService {
     }
 
     @Transactional
-    public void deleteChallenge(long challengeId) {
-        Challenge challenge = findByChallengeId(challengeId).get();
-        challengeRepository.delete(challenge);
+    public boolean deleteChallenge(long challengeId, Member member) {
+        long examiner = findExaminer(challengeId);
+        if (examiner == member.getId()) {
+            Challenge challenge = findByChallengeId(challengeId).get();
+            challengeRepository.delete(challenge);
+            return true;
+        } else return false;
     }
 
     public long findExaminer(long challengeId) {
