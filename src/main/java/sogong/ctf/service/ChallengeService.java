@@ -115,7 +115,7 @@ public class ChallengeService {
     private List<TestCaseDTO> findTestCases(Challenge findChallenge) {
         List<TestCase> testcases = testCaseRepository.findAllByChallengeId(findChallenge);
         List<TestCaseDTO> caseDTOS = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             TestCaseDTO dto = new TestCaseDTO(testcases.get(i).getInput(), testcases.get(i).getOutput());
             caseDTOS.add(dto);
         }
