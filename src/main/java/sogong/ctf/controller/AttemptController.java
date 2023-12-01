@@ -18,47 +18,47 @@ public class AttemptController {
     private final MemberService memberService;
 
     @PostMapping("/api/attempt/challenge")
-    public ResponseEntity compileCode(@AuthUser Member member, @RequestBody CodeRequestDTO codeRequestDTO){
-        try{
-            attemptService.compileAndRun(codeRequestDTO,member);
+    public ResponseEntity compileCode(@AuthUser Member member, @RequestBody CodeRequestDTO codeRequestDTO) {
+        try {
+            attemptService.compileAndRun(codeRequestDTO, member);
             return new ResponseEntity(HttpStatus.OK);
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(400).build();
         }
     }
 
     @GetMapping("/api/attempt/member")
-    public ResponseEntity getAttempts(@AuthUser Member member){
-        try{
+    public ResponseEntity getAttempts(@AuthUser Member member) {
+        try {
             return ResponseEntity.ok(attemptService.getMemberAttempt(member));
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(400).build();
         }
     }
 
     @GetMapping("/api/challenge/{challengeId}/attempt")
-    public ResponseEntity getChallengeAttempts(@PathVariable("challengeId") int challengeId){
-        try{
+    public ResponseEntity getChallengeAttempts(@PathVariable("challengeId") int challengeId) {
+        try {
             return ResponseEntity.ok(attemptService.getChallengeAttempt(challengeId));
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/api/challenge/{challengeId}/member")
-    public ResponseEntity getChallengeAttemptbyMember(@PathVariable("challengeId") int challengeId,@AuthUser Member member){
-        try{
+    public ResponseEntity getChallengeAttemptbyMember(@PathVariable("challengeId") int challengeId, @AuthUser Member member) {
+        try {
             return ResponseEntity.ok(memberService.showAllChallenge(member, challengeId));
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/api/attempt/member/success")
-    public ResponseEntity getChallengeSuccess(@AuthUser Member member){
+    public ResponseEntity getChallengeSuccess(@AuthUser Member member) {
         try {
             return ResponseEntity.ok(attemptService.getChallengeSuccess(member));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(400).build();
         }
     }

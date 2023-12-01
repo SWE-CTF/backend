@@ -1,9 +1,13 @@
 package sogong.ctf.dto.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import sogong.ctf.domain.Comment;
 
 import java.time.LocalDateTime;
+
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,12 +19,12 @@ public class CommentResponseDTO {
     private LocalDateTime writeTime;
 
     public static CommentResponseDTO toCommentResponseDTO(Comment comment) {
-       return CommentResponseDTO.builder()
-               .commentId(comment.getId())
-               .nickname(comment.getWriter().getNickname())
-               .content(comment.getContent())
-               .writeTime(comment.getWriteTime())
-               .build();
+        return CommentResponseDTO.builder()
+                .commentId(comment.getId())
+                .nickname(comment.getWriter().getNickname())
+                .content(comment.getContent())
+                .writeTime(comment.getWriteTime())
+                .build();
     }
 
 }

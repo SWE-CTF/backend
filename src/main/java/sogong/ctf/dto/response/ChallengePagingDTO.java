@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import sogong.ctf.domain.Challenge;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -15,7 +16,7 @@ public class ChallengePagingDTO {
     private String examiner;
     private int correct_cnt;
 
-    public static ChallengePagingDTO toChallengePagingDTO(Challenge challenge){
+    public static ChallengePagingDTO toChallengePagingDTO(Challenge challenge) {
         ChallengePagingDTO dto = new ChallengePagingDTO();
         dto.setId(challenge.getId());
         dto.setTitle(challenge.getTitle());

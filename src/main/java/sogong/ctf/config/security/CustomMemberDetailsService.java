@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.Member;
 import sogong.ctf.repository.MemberRepository;
+
 import java.util.Optional;
 
 @Service
@@ -21,7 +22,7 @@ public class CustomMemberDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> member = memberRepository.findByUsername(username);
 
-        if(member.isEmpty())
+        if (member.isEmpty())
             throw new UsernameNotFoundException("Invalid Authentication");
 
         return new CustomMemberDetails(member.get());

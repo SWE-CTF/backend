@@ -69,9 +69,10 @@ public class NoticeController {
 
     @GetMapping("/paging")
     public ResponseEntity<List<NoticePagingDTO>> paging(@PageableDefault(page = 1) Pageable page) {
-        try{List<NoticePagingDTO> paging = noticeService.paging(page);
-        return  ResponseEntity.ok(paging);}
-        catch (Exception e){
+        try {
+            List<NoticePagingDTO> paging = noticeService.paging(page);
+            return ResponseEntity.ok(paging);
+        } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
     }

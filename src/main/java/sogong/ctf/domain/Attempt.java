@@ -31,14 +31,14 @@ public class Attempt {
     private Challenge challengeId;
 
     @Builder
-    public Attempt(Member member, String code, CodeStatus codeStatus, Challenge challenge){
+    public Attempt(Member member, String code, CodeStatus codeStatus, Challenge challenge) {
         this.memberId = member;
-        this.code =code;
+        this.code = code;
         this.codeStatus = codeStatus;
         this.challengeId = challenge;
     }
 
-    public void updateStatus(CodeStatus codeStatus){
+    public void updateStatus(CodeStatus codeStatus) {
         this.codeStatus = codeStatus;
     }
 

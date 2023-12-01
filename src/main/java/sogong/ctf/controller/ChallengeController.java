@@ -86,9 +86,9 @@ public class ChallengeController {
     @DeleteMapping("/{challengeId}")
     public ResponseEntity deleteChallenge(@PathVariable("challengeId") int challengeId, @AuthUser Member member) {
         boolean delete = challengeService.deleteChallenge(challengeId, member);
-        if(delete){
+        if (delete) {
             return ResponseEntity.noContent().build();
-        }else //출제자가 아닌 사용자가 삭제하려는 경우
+        } else //출제자가 아닌 사용자가 삭제하려는 경우
             return ResponseEntity.status(403).build();
 
     }

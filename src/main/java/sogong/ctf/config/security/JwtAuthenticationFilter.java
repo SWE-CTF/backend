@@ -14,7 +14,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
 
-    public JwtAuthenticationFilter(JwtProvider jwtProvider){
+    public JwtAuthenticationFilter(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
 
@@ -22,11 +22,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtProvider.resolveToken(request);
 
-        if(token != null && jwtProvider.validateToken(token)){
+        if (token != null && jwtProvider.validateToken(token)) {
             token = token.split(" ")[1].trim();
             Authentication auth = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }
