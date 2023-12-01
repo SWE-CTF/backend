@@ -23,7 +23,7 @@ public class ChallengeResponseDTO {
     private List<byte[]> files;
     private List<TestCaseDTO> testcases;
 
-    public static ChallengeResponseDTO toDTO(Challenge challenge, List<TestCaseDTO> testCases, List<byte[]> files){
+    public static ChallengeResponseDTO toDTO(Challenge challenge, List<TestCaseDTO> testCases, List<byte[]> files) {
         return ChallengeResponseDTO.builder()
                 .id(challenge.getId())
                 .title(challenge.getTitle())
@@ -35,7 +35,7 @@ public class ChallengeResponseDTO {
                 .time(challenge.getTime())
                 .testcases(testCases)
                 .files(files)
-                .category((challenge.getCategoryId()==null)?"":challenge.getCategoryId().getName())
+                .category((challenge.getCategoryId() == null) ? "" : challenge.getCategoryId().getName())
                 .build();
     }
 }

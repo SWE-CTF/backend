@@ -42,17 +42,17 @@ public class SecurityConfig {
 
 
         http.authorizeRequests()
-                .antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico").permitAll();
+                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico").permitAll();
 
 
         http.authorizeRequests()
-                .antMatchers("/api/attempt/**").hasAnyRole("MEMBER","ADMIN")
-                .antMatchers("/api/challenge/*/attempt").hasAnyRole("MEMBER","ADMIN")
-                .antMatchers("/api/challenge/save").hasAnyRole("MEMBER","ADMIN")
-                .antMatchers("/api/member/logout","/api/member/profile/**").hasAnyRole("MEMBER","ADMIN") //로그아웃 기능은 로그인해서 권한이 있을때만 가능
-                .antMatchers("/api/comment/**").hasAnyRole("MEMBER","ADMIN")
+                .antMatchers("/api/attempt/**").hasAnyRole("MEMBER", "ADMIN")
+                .antMatchers("/api/challenge/*/attempt").hasAnyRole("MEMBER", "ADMIN")
+                .antMatchers("/api/challenge/save").hasAnyRole("MEMBER", "ADMIN")
+                .antMatchers("/api/member/logout", "/api/member/profile/**").hasAnyRole("MEMBER", "ADMIN") //로그아웃 기능은 로그인해서 권한이 있을때만 가능
+                .antMatchers("/api/comment/**").hasAnyRole("MEMBER", "ADMIN")
                 .antMatchers("/api/notice/save").hasAnyRole("ADMIN")
-                .antMatchers("/api/question/save").hasAnyRole("MEMBER","ADMIN")
+                .antMatchers("/api/question/save").hasAnyRole("MEMBER", "ADMIN")
                 .antMatchers("/api/**").permitAll() //테스트 단계라 모든 권한 허용
                 .anyRequest().permitAll()
                 .and()
@@ -87,7 +87,6 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000"); // 허용할 오리진
-        //configuration.addAllowedOrigin("http://51.20.115.244:3000");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);

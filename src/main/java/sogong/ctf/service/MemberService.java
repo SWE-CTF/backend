@@ -86,14 +86,16 @@ public class MemberService {
         return true;
 
     }
-    public boolean IsEquals(Member member,Member writer){
+
+    public boolean IsEquals(Member member, Member writer) {
         return member.getId().equals(writer.getId());
     }
-    public Member findMemberById(long id){
+
+    public Member findMemberById(long id) {
         return memberRepository.findById(id).get();
     }
 
-    public List<RankDTO> rank(){
+    public List<RankDTO> rank() {
         List<Member> allOrderByCount = memberRepository.findAllOrderByCount();
         return allOrderByCount.stream()
                 .map(Member -> RankDTO.builder()
@@ -155,10 +157,10 @@ public class MemberService {
     public MemberResponseNotTokenDTO postProfile(ProfilePostDTO profilePostDTO, Member member) {
         Optional<Member> member1 = memberRepository.findById(member.getId());
 
-        if(!passwordEncoder.matches(profilePostDTO.getCurrentPW(),member1.get().getPassword()))
+        if (!passwordEncoder.matches(profilePostDTO.getCurrentPW(), member1.get().getPassword()))
             throw new BadCredentialsException("password false");
 
-        if(!profilePostDTO.getNewPW().isEmpty()){
+        if (!profilePostDTO.getNewPW().isEmpty()) {
             profilePostDTO.setNewPW(passwordEncoder.encode(profilePostDTO.getNewPW()));
             member1.get().updateData(profilePostDTO);
         } else {

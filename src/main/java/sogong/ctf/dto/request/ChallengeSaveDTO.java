@@ -38,10 +38,10 @@ public class ChallengeSaveDTO {
     private String output3;
 
     @Builder
-    public ChallengeSaveDTO(String title, String content,long categoryId, float time, float memory, List<MultipartFile> files, String hint, String input1, String output1, String input2, String output2, String input3, String output3) {
+    public ChallengeSaveDTO(String title, String content, long categoryId, float time, float memory, List<MultipartFile> files, String hint, String input1, String output1, String input2, String output2, String input3, String output3) {
         this.title = title;
         this.content = content;
-        this.categoryId=categoryId;
+        this.categoryId = categoryId;
         this.time = time;
         this.memory = memory;
         this.files = files;
@@ -55,8 +55,8 @@ public class ChallengeSaveDTO {
     }
 
     public void setFiles(List<MultipartFile> files) {
-        if(files==null){
-            this.files=new ArrayList<>();
+        if (files == null) {
+            this.files = new ArrayList<>();
         }
         this.files = files;
     }

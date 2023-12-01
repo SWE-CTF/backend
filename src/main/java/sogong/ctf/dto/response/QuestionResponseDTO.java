@@ -24,19 +24,19 @@ public class QuestionResponseDTO {
     List<CommentResponseDTO> commentList;
 
     @Builder
-    public QuestionResponseDTO(long questionId,long challengeId, String title, String content, String writer, long commentId, LocalDateTime writeTime) {
-        this.questionId=questionId;
+    public QuestionResponseDTO(long questionId, long challengeId, String title, String content, String writer, long commentId, LocalDateTime writeTime) {
+        this.questionId = questionId;
         this.challengeId = challengeId;
         this.title = title;
         this.content = content;
         this.writer = writer;
-        this.commentId=commentId;
+        this.commentId = commentId;
         this.writeTime = writeTime;
         this.commentList = new ArrayList<>();
     }
 
     public static QuestionResponseDTO toQuestionResponseDTO(Question q) {
-        long commentId = (q.getAdoptedComment()!=null)? q.getAdoptedComment().getId():-1;
+        long commentId = (q.getAdoptedComment() != null) ? q.getAdoptedComment().getId() : -1;
         return QuestionResponseDTO.builder()
                 .questionId(q.getId())
                 .challengeId(q.getChallengeId().getId())

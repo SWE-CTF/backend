@@ -18,7 +18,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "member_id")
     private Long id;
 
@@ -39,7 +40,7 @@ public class Member {
     private List<Attempt> attempts = new ArrayList<>();
 
     @Builder
-    public Member(String username,String password, String name, String email, String nickname,  Role role){
+    public Member(String username, String password, String name, String email, String nickname, Role role) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -48,18 +49,20 @@ public class Member {
         this.role = role;
     }
 
-    public void addAttempt(Attempt attempt){this.attempts.add(attempt);}
+    public void addAttempt(Attempt attempt) {
+        this.attempts.add(attempt);
+    }
 
-    public void addCount(){
+    public void addCount() {
         this.count += 1;
     }
 
-    public void updateData(ProfilePostDTO profilePostDTO){
+    public void updateData(ProfilePostDTO profilePostDTO) {
         this.nickname = profilePostDTO.getNickname();
         this.password = profilePostDTO.getNewPW();
     }
 
-    public void updateData(ProfilePostNotPWDTO profilePostNotPWDTO){
+    public void updateData(ProfilePostNotPWDTO profilePostNotPWDTO) {
         this.nickname = profilePostNotPWDTO.getNickname();
     }
 }

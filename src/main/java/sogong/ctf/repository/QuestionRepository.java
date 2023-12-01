@@ -6,6 +6,6 @@ import sogong.ctf.domain.Question;
 
 import java.util.List;
 
-public interface QuestionRepository extends JpaRepository<Question,Long> {
+public interface QuestionRepository extends JpaRepository<Question, Long> {
     public List<Question> findAllByChallengeId(Challenge challengeId);
 }

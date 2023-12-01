@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
+import sogong.ctf.dto.request.QuestionSaveDTO;
 import sogong.ctf.dto.response.CommentResponseDTO;
 import sogong.ctf.dto.response.QuestionPagingDTO;
 import sogong.ctf.dto.response.QuestionResponseDTO;
-import sogong.ctf.dto.request.QuestionSaveDTO;
 import sogong.ctf.service.*;
 
 import javax.validation.Valid;
@@ -53,8 +53,8 @@ public class QuestionController {
      */
     @GetMapping("/challenge/{challengeId}")
     public ResponseEntity<List<QuestionPagingDTO>> getQuestionByChallengeId(@PathVariable("challengeId") int challengeId) {
-        List<QuestionPagingDTO> questions =questionService.getQuestionsByChallengeId(challengeId);
-        if(questions.size()==0)
+        List<QuestionPagingDTO> questions = questionService.getQuestionsByChallengeId(challengeId);
+        if (questions.size() == 0)
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(questions);
     }

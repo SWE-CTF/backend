@@ -10,7 +10,8 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 public class TestCase {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "case_id")
     private Long id;
 

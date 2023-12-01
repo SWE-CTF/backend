@@ -17,9 +17,9 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final ChallengeRepository challengeRepository;
 
-    public List<CategoryListDTO> getCategoryList(){
+    public List<CategoryListDTO> getCategoryList() {
         List<Category> categoryList = categoryRepository.findAll();
-        List<CategoryListDTO> categories= new ArrayList<>();
+        List<CategoryListDTO> categories = new ArrayList<>();
         for (Category category : categoryList) {
             List<Challenge> allByCategoryId = challengeRepository.findAllByCategoryId(category);
             CategoryListDTO dto = CategoryListDTO.builder()

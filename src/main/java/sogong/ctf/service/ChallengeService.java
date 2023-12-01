@@ -20,7 +20,10 @@ import sogong.ctf.repository.CategoryRepository;
 import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.TestCaseRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +58,7 @@ public class ChallengeService {
                 .time(saveForm.getTime())
                 .memory(saveForm.getMemory())
                 .examiner(member)
-                .hint((saveForm.getHint()==null)?"":saveForm.getHint())
+                .hint((saveForm.getHint() == null) ? "" : saveForm.getHint())
                 .fileExist(saveForm.getFiles() != null)
                 .build();
         Challenge savedChallenge = challengeRepository.save(c);

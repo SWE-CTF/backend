@@ -23,8 +23,8 @@ public class QuestionCommentController {
         log.info("댓글 작성 요청");
         try {
             long save = commentService.save(member, questionId, request.getContent());
-            Map<String,Long> result = new HashMap<>();
-            result.put("commentId",save);
+            Map<String, Long> result = new HashMap<>();
+            result.put("commentId", save);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             System.out.println(e);
@@ -34,7 +34,7 @@ public class QuestionCommentController {
 
     @PutMapping("/{commentId}")
     public ResponseEntity updateComment(@PathVariable("commentId") long commentId, @RequestBody QuestionCommentSaveDTO request, Member member) {
-        if (commentService.update(commentId, request.getContent(),member)) {
+        if (commentService.update(commentId, request.getContent(), member)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(403).build();
@@ -43,7 +43,7 @@ public class QuestionCommentController {
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity deleteComment(@PathVariable("commentId") long commentId, Member member) {
-        if (commentService.delete(commentId,member)) {
+        if (commentService.delete(commentId, member)) {
             return ResponseEntity.status(204).build();
         } else {
             return ResponseEntity.status(403).build();

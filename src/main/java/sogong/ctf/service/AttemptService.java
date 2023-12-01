@@ -1,11 +1,5 @@
 package sogong.ctf.service;
 
-import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.*;
-import com.github.dockerjava.api.model.*;
-import com.github.dockerjava.core.DefaultDockerClientConfig;
-import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.core.command.LogContainerResultCallback;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -13,8 +7,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.*;
-import sogong.ctf.dto.response.AttemptDTO;
 import sogong.ctf.dto.request.CodeRequestDTO;
+import sogong.ctf.dto.response.AttemptDTO;
 import sogong.ctf.dto.response.AttemptSuccessDTO;
 import sogong.ctf.repository.AttemptRepository;
 import sogong.ctf.repository.ChallengeRepository;
@@ -172,40 +166,28 @@ public class AttemptService {
             }
         }
 
-            //codeStatusList의 상태를 보고 attempt 수정
+        //codeStatusList의 상태를 보고 attempt 수정
 
-            Optional<Attempt> attempt = attemptRepository.findById(attemptId);
+        Optional<Attempt> attempt = attemptRepository.findById(attemptId);
 
 
-            //codeStatus 상태가 성공일 경우
-            if (codeStatus == CodeStatus.SUCCESS) {
-                member1.get().addCount();
-                challenge.get().addCorrectCnt();
-            }
-            //사용자 +1
-            //codeStatus 상태가 성공일 경우
+        //codeStatus 상태가 성공일 경우
+        if (codeStatus == CodeStatus.SUCCESS) {
+            member1.get().addCount();
+            challenge.get().addCorrectCnt();
+        }
+        //사용자 +1
+        //codeStatus 상태가 성공일 경우
 
-            attempt.get().updateStatus(codeStatus);
-            //codeStatusList의 상태를 보고 attempt 수정
+        attempt.get().updateStatus(codeStatus);
+        //codeStatusList의 상태를 보고 attempt 수정
 
-            //시도한 내력 추가, 사용자/문제
-            member1.get().addAttempt(attempt.get());
-            challenge.get().addAttempt(attempt.get());
+        //시도한 내력 추가, 사용자/문제
+        member1.get().addAttempt(attempt.get());
+        challenge.get().addAttempt(attempt.get());
     }
 
-    public String getDockerImage(String language) {
-
-        if("c".equalsIgnoreCase(language))
-            return "dbwogur36/swe:c";
-        else if("python".equalsIgnoreCase(language))
-            return "dbwogur36/swe:python";
-        else if("java".equalsIgnoreCase(language))
-            return "dbwogur36/swe:latest";
-
-        return "";
-    }
-
-    public String getExtension(String language){
+    public String getExtension(String language) {
         switch (language.toLowerCase()) {
             case "python":
                 return "py";
@@ -261,7 +243,7 @@ public class AttemptService {
         return getAttemptListDTO(member1.get().getAttempts());
     }
 
-    public AttemptSuccessDTO getChallengeSuccess(Member member){
+    public AttemptSuccessDTO getChallengeSuccess(Member member) {
         Optional<Member> byUsername = memberRepository.findById(member.getId());
 
         Set<Long> correctChallengeId = byUsername.get().getAttempts().stream()
