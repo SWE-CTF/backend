@@ -34,17 +34,6 @@ public class AttemptService {
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
 
-    @Value("${user.docker.id}")
-    String dockerId;
-    @Value("${user.docker.pw}")
-    String dockerPw;
-    @Value("${server.docker.url}")
-    String dockerUrl;
-    @Value("${server.docker.apiVersion}")
-    String apiVersion;
-    @Value("${server.docker.host}")
-    String host;
-
     @Value("${code.storage.path}")
     private String codeStoragePath;
 
