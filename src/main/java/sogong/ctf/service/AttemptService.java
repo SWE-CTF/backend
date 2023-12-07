@@ -122,7 +122,7 @@ public class AttemptService {
                         output = executeCommand("java -cp " + codeStoragePath + " Main " + arg);
                         break;
                     case "python":
-                        output = executeCommand("python " + filePath + " " + arg);
+                        output = executeCommand("python3 " + filePath + " " + arg);
                         break;
                     case "c":
                         executeCommand("gcc " + filePath + " -o " + codeStoragePath + "/Main");
