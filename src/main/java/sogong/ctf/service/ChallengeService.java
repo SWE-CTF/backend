@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.Category;
@@ -16,13 +17,15 @@ import sogong.ctf.dto.request.ChallengeSearchDTO;
 import sogong.ctf.dto.response.ChallengePagingDTO;
 import sogong.ctf.dto.response.ChallengeResponseDTO;
 import sogong.ctf.dto.response.TestCaseDTO;
+import sogong.ctf.exception.CategoryNotFoundException;
+import sogong.ctf.exception.ChallengeNotFoundException;
+import sogong.ctf.exception.ErrorCode;
 import sogong.ctf.repository.CategoryRepository;
 import sogong.ctf.repository.ChallengeRepository;
 import sogong.ctf.repository.TestCaseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -50,11 +53,12 @@ public class ChallengeService {
 
     @Transactional
     public long save(ChallengeSaveDTO saveForm, Member member) {
-        Category category = categoryRepository.findById(saveForm.getCategoryId()).get();
+        Optional<Category> category = categoryRepository.findById(saveForm.getCategoryId());
+        if (category.isEmpty()) throw new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_EXIST);
         Challenge c = Challenge.builder()
                 .title(saveForm.getTitle())
                 .content(saveForm.getContent())
-                .categoryId(category)
+                .categoryId(category.get())
                 .time(saveForm.getTime())
                 .memory(saveForm.getMemory())
                 .examiner(member)
@@ -107,7 +111,7 @@ public class ChallengeService {
     public ChallengeResponseDTO getDetails(long challengeId) {
         Optional<Challenge> findChallenge = challengeRepository.findById(challengeId);//문제 찾기
         if (findChallenge.isEmpty()) {
-            throw new NoSuchElementException();
+            throw new ChallengeNotFoundException(ErrorCode.CHALLENGE_NOT_EXIST);
         } else {
             List<byte[]> files = challengeFileService.getFiles(findChallenge.get());//파일 찾기
             List<TestCaseDTO> testCases = findTestCases(findChallenge.get());//테스트케이스 찾기
@@ -126,13 +130,12 @@ public class ChallengeService {
     }
 
     @Transactional
-    public boolean deleteChallenge(long challengeId, Member member) {
+    public void deleteChallenge(long challengeId, Member member) {
         long examiner = findExaminer(challengeId);
         if (examiner == member.getId()) {
             Challenge challenge = findByChallengeId(challengeId).get();
             challengeRepository.delete(challenge);
-            return true;
-        } else return false;
+        } else throw new AccessDeniedException("사용자와 작성자가 일치하지 않습니다");
     }
 
     public long findExaminer(long challengeId) {
@@ -141,7 +144,7 @@ public class ChallengeService {
     }
 
     @Transactional
-    public boolean updateChallenge(long challengeId, ChallengeSaveDTO updateForm, Member member) {
+    public void updateChallenge(long challengeId, ChallengeSaveDTO updateForm, Member member) {
         long examiner = findExaminer(challengeId);
         if (examiner == member.getId()) {
             Challenge challenge = findByChallengeId(challengeId).get();
@@ -158,8 +161,7 @@ public class ChallengeService {
             testCaseRepository.deleteAllByChallengeId(challenge);//기존 테스트 케이스 모두 삭제
             saveTestCase(updateForm, challenge);
 
-            return true;
         } else //문제 출제자가 아닌 사용자가 삭제하려는 경우
-            return false;
+            throw new AccessDeniedException("사용자와 작성자가 일치하지 않습니다");
     }
 }

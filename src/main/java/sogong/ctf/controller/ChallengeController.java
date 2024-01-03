@@ -18,7 +18,6 @@ import sogong.ctf.service.ChallengeService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,15 +51,11 @@ public class ChallengeController {
      */
     @PostMapping("/save")
     public ResponseEntity saveChallenge(@RequestPart("saveForm") @Valid ChallengeSaveDTO saveForm,
-                                        @RequestPart(value = "files", required = false) List<MultipartFile> files, @AuthUser Member member) {
-        try {
-            saveForm.setFiles(files);
-            challengeService.save(saveForm, member);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
+                                        @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                        @AuthUser Member member) {
+        saveForm.setFiles(files);
+        challengeService.save(saveForm, member);
+        return ResponseEntity.ok().build();
     }
 
     /*
@@ -68,29 +63,18 @@ public class ChallengeController {
      */
     @GetMapping("{challengeId}")
     public ResponseEntity<ChallengeResponseDTO> getChallenge(@PathVariable("challengeId") int challengeId) {
-        try {
-            ChallengeResponseDTO details = challengeService.getDetails(challengeId);
-            return ResponseEntity.ok(details);
-
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
+        ChallengeResponseDTO details = challengeService.getDetails(challengeId);
+        return ResponseEntity.ok(details);
     }
 
     /*
     문제 삭제
      */
     @DeleteMapping("/{challengeId}")
-    public ResponseEntity deleteChallenge(@PathVariable("challengeId") int challengeId, @AuthUser Member member) {
-        boolean delete = challengeService.deleteChallenge(challengeId, member);
-        if (delete) {
-            return ResponseEntity.noContent().build();
-        } else //출제자가 아닌 사용자가 삭제하려는 경우
-            return ResponseEntity.status(403).build();
-
+    public ResponseEntity deleteChallenge(@PathVariable("challengeId") int challengeId,
+                                          @AuthUser Member member) {
+        challengeService.deleteChallenge(challengeId, member);
+        return ResponseEntity.noContent().build();
     }
 
     /*
@@ -102,12 +86,9 @@ public class ChallengeController {
                                           @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                           @AuthUser Member member) {
         updateForm.setFiles(files);
-        boolean update = challengeService.updateChallenge(challengeId, updateForm, member);
-        if (update) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.internalServerError().build();
-        }
+        challengeService.updateChallenge(challengeId, updateForm, member);
+        return ResponseEntity.ok().build();
+
     }
 
     /*

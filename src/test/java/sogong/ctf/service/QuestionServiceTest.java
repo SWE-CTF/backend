@@ -32,6 +32,7 @@ class QuestionServiceTest {
     @Autowired
     private ChallengeRepository challengeRepository;
     @Autowired
+
     private MemberService memberService;
 
     private Member member1;

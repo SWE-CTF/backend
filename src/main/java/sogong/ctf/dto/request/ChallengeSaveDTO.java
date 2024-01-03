@@ -11,7 +11,6 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-
 public class ChallengeSaveDTO {
     @NotNull
     private String title;
