@@ -23,26 +23,16 @@ public class QuestionController {
     private final ChallengeService challengeService;
     private final QuestionService questionService;
     private final QuestionCommentService commentService;
-    private final MemberService memberService;
 
     /*
     질문 게시글 작성
      */
     @PostMapping("/save")
-    public ResponseEntity saveQuestion(@RequestBody @Valid QuestionSaveDTO saveForm, @AuthUser Member member) {//질문 작성
+    public ResponseEntity saveQuestion(@RequestBody @Valid QuestionSaveDTO saveForm, @AuthUser Member member) { // 질문 작성
         log.info("질문 게시글 작성 요청");
-        if (member.getId() == null) {
-            return ResponseEntity.status(403).build();
-        } else {
-            Challenge findChallenge = challengeService.findByChallengeId(saveForm.getChallengeId());//문제 번호 확인
-            try {
-                questionService.save(member, saveForm, findChallenge);//질문 저장
-                return ResponseEntity.ok().build();
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                return ResponseEntity.internalServerError().build();
-            }
-        }
+        Challenge findChallenge = challengeService.findByChallengeId(saveForm.getChallengeId()); // 문제 번호 확인
+        questionService.save(member, saveForm, findChallenge); // 질문 저장
+        return ResponseEntity.ok().build();
     }
 
     /*
@@ -76,16 +66,8 @@ public class QuestionController {
      */
     @DeleteMapping("/{questionId}")
     public ResponseEntity deleteQuestion(@PathVariable("questionId") int questionId, @AuthUser Member member) {
-        try {
-            if (questionService.delete(questionId, member)) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.status(403).build();
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().build();
-        }
+        questionService.delete(questionId, member);
+        return ResponseEntity.ok().build();
     }
 
     /*
@@ -93,16 +75,8 @@ public class QuestionController {
      */
     @PutMapping("/{questionId}")
     public ResponseEntity updateQuestion(@PathVariable("questionId") int questionId, @RequestBody QuestionSaveDTO questionupdateDTO, @AuthUser Member member) {
-        try {
-            if (questionService.update(questionId, questionupdateDTO, member)) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.status(403).build();
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().build();
-        }
+        questionService.update(questionId, questionupdateDTO, member);
+        return ResponseEntity.ok().build();
     }
 
     /*
