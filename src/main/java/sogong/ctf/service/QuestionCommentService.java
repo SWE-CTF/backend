@@ -12,7 +12,6 @@ import sogong.ctf.repository.CommentRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,16 +23,14 @@ public class QuestionCommentService {
     @Transactional
     public long save(Member member, long questionId, String content) {
 
-        Optional<Question> question = questionService.findByQuestionId(questionId);
+        Question question = questionService.findByQuestionId(questionId);
 
-        if (question.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+
         Comment comment = Comment.builder()
                 .writer(member)
                 .content(content)
                 .writeTime(LocalDateTime.now())
-                .questionId(question.get())
+                .questionId(question)
                 .build();
         Comment save = commentRepository.save(comment);
 
@@ -41,7 +38,7 @@ public class QuestionCommentService {
     }
 
     public List<CommentResponseDTO> getComments(long questionId) {
-        Question question = questionService.findByQuestionId(questionId).get();
+        Question question = questionService.findByQuestionId(questionId);
         List<Comment> commentList = commentRepository.findAllByQuestionId(question);
         List<CommentResponseDTO> dtoList = new ArrayList<>();
         for (Comment comment : commentList) {

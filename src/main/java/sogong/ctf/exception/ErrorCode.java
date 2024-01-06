@@ -14,8 +14,10 @@ public enum ErrorCode {
     HANDLE_ACCESS_DENIED(403, "Access is Denied"),
     // challenge
     CATEGORY_NOT_EXIST(400, "No Such Category"),
-    CHALLENGE_NOT_EXIST(400, "No Such Challenge");
+    CHALLENGE_NOT_EXIST(400, "No Such Challenge"),
 
+    // question
+    QUESTION_NOT_EXIST(400,"No Such Question");
 
     private final int status;
     private final String msg;
