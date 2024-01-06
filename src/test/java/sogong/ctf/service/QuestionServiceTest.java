@@ -6,20 +6,28 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
+import sogong.ctf.config.security.CustomMemberDetails;
 import sogong.ctf.domain.Challenge;
 import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Question;
-import sogong.ctf.dto.request.MemberRequestDTO;
-import sogong.ctf.dto.response.QuestionResponseDTO;
+import sogong.ctf.domain.Role;
 import sogong.ctf.dto.request.QuestionSaveDTO;
+import sogong.ctf.dto.response.QuestionResponseDTO;
+import sogong.ctf.exception.QuestionNotFoundException;
+import sogong.ctf.mockConfig.WithCustomMockUser;
 import sogong.ctf.repository.ChallengeRepository;
+import sogong.ctf.repository.MemberRepository;
 import sogong.ctf.repository.QuestionRepository;
 
-import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -32,138 +40,157 @@ class QuestionServiceTest {
     @Autowired
     private ChallengeRepository challengeRepository;
     @Autowired
-
-    private MemberService memberService;
+    private MemberRepository memberRepository;
 
     private Member member1;
-    private Member member2;
     private Challenge challenge;
 
+    /*
+     * 질문과 관련된 서비스를 테스트하기 위해
+     * Member 객체와 Challenge 객체를 저장한다.
+     */
     @BeforeEach
     void setup() {
-        Long test1 = memberService.join(new MemberRequestDTO("test", "test", "test", "test", "test"));
-        Long test2 = memberService.join(new MemberRequestDTO("test2", "test", "test", "test", "test"));
-        member1 = memberService.findMemberById(test1);
-        member2 = memberService.findMemberById(test2);
-        challenge = new Challenge("question", "question",null, 1.0f, 1.0f, member1,null,false);
-        challengeRepository.save(challenge);
+        member1 = memberRepository.save(Member.builder().name("test").role(Role.ROLE_MEMBER).build());
+        challenge = challengeRepository.save(Challenge.builder()
+                .title("은주오의 덧셈 계산기")
+                .content("입력값 A,B가 주어지면 덧셈 결과를 출력하세요.")
+                .memory(128f)
+                .time(6f)
+                .examiner(member1)
+                .fileExist(false)
+                .build());
     }
+
     @Test
     @DisplayName("글 저장")
     void save() {
-        //given
+        // given
         QuestionSaveDTO saveDTO = QuestionSaveDTO.builder()
-                .challengeId(1)
+                .challengeId(challenge.getId())
                 .title("저장 테스트 제목")
                 .content("글 저장 테스트")
                 .build();
 
-        //when
+        // when
         long save = questionService.save(member1, saveDTO, challenge);
-        //then
-        Question q = questionRepository.findById(save).orElseThrow(() -> new EntityNotFoundException("게시글이 존재하지 않습니다"));
-        assertThat(save).isEqualTo(q.getId());
+        // then
+        Question find = questionRepository.findById(save).get();
+        assertThat(find.getId()).isEqualTo(save);
     }
 
     @Test
-    @DisplayName("글 조회 성공")
+    @DisplayName("저장된 글을 조회하면 글이 조회되어야한다")
     void getDetailSucc() {
-        //given
-        QuestionSaveDTO saveDTO = QuestionSaveDTO.builder()
-                .challengeId(1)
-                .title("저장 테스트 제목")
-                .content("글 저장 테스트")
-                .build();
-        long save = questionService.save(member1, saveDTO, challenge);
-        //when
-        QuestionResponseDTO details = questionService.getDetails(save);
-        //then
-        Assertions.assertThat(details.getQuestionId()).isEqualTo(save);
+        // given
+        Question save = questionRepository.save(Question.builder()
+                .memberId(member1)
+                .title("질문 조회 테스트")
+                .content("내용")
+                .challengeId(challenge)
+                .build());
+
+        // when
+        QuestionResponseDTO details = questionService.getDetails(save.getId());
+        // then
+        Assertions.assertThat(details.getQuestionId()).isEqualTo(save.getId());
     }
 
     @Test
-    @DisplayName("글 조회 실패")
-    void getDeatailFail() {
-        //given
-        //저장된거 x
-        //when
-        QuestionResponseDTO details = questionService.getDetails(1);
-        //then
-        org.junit.jupiter.api.Assertions.assertNull(details);
+    @DisplayName("저장되지 않은 글을 조회하면 조회되지않아야한다.")
+    void getDetailFail() {
+        // given
+        // 저장된 질문글이 없다
 
+        // when
+        // then
+        assertThrows(QuestionNotFoundException.class, () -> questionService.getDetails(1));
     }
 
     @Test
-    @DisplayName("글 삭제 성공")
-    void deleteSucc(){
-        //given
-        QuestionSaveDTO saveDTO = QuestionSaveDTO.builder()
-                .challengeId(1)
-                .title("저장 테스트 제목")
-                .content("글 저장 테스트")
-                .build();
-        long save = questionService.save(member1, saveDTO, challenge);
-        //when
-        boolean delete = questionService.delete(save, member1);
-        //then
-        Assertions.assertThat(delete).isTrue();
-    }
-    @Test
-    @DisplayName("글 삭제 실패")
-    void deleteFail(){
-        //given
-        QuestionSaveDTO saveDTO = QuestionSaveDTO.builder()
-                .challengeId(1)
-                .title("저장 테스트 제목")
-                .content("글 저장 테스트")
-                .build();
-        long save = questionService.save(member1, saveDTO, challenge);
-        //when
-        boolean delete = questionService.delete(save, member2);
-        //then
-        Assertions.assertThat(delete).isFalse();
-    }
-
-    @Test
-    @DisplayName("글 수정 성공")
+    @DisplayName("작성자가 질문을 수정하면 수정되어야한다")
     void updateSucc() {
-        //given
-        QuestionSaveDTO saveDTO = QuestionSaveDTO.builder()
-                .challengeId(1)
-                .title("저장 테스트 제목")
-                .content("글 저장 테스트")
-                .build();
-        long save = questionService.save(member1, saveDTO, challenge);
+        // given
+        Question save = questionRepository.save(Question.builder()
+                .memberId(member1)
+                .title("질문 수정 테스트")
+                .content("내용")
+                .challengeId(challenge)
+                .build());
+
         QuestionSaveDTO updateDTO = QuestionSaveDTO.builder()
-                .challengeId(1)
-                .title("수정 테스트 제목")
-                .content("글 수정 테스트")
+                .challengeId(challenge.getId())
+                .title("수정되었습니다")
+                .content("내용")
                 .build();
-        //when
-        boolean update = questionService.update(save, updateDTO, member1);
-        //then
-        Assertions.assertThat(update).isTrue();
+        // when
+        questionService.update(save.getId(), updateDTO, member1);
+        // then
+        Question find = questionRepository.findById(save.getId()).get();
+        assertThat(find.getTitle()).isEqualTo("수정되었습니다");
+
     }
 
     @Test
-    @DisplayName("글 수정 실패")
+    @WithCustomMockUser
+    @DisplayName("작성자가 아닌 사용자가 질문을 수정하면 수정되지않아야한다")
     void updateFail() {
-        //given
-        QuestionSaveDTO saveDTO = QuestionSaveDTO.builder()
-                .challengeId(1)
-                .title("저장 테스트 제목")
-                .content("글 저장 테스트")
-                .build();
-        long save = questionService.save(member1, saveDTO, challenge);
+        // given
+        Question save = questionRepository.save(Question.builder()
+                .memberId(member1)
+                .title("질문 조회 테스트")
+                .content("내용")
+                .challengeId(challenge)
+                .build());
+
         QuestionSaveDTO updateDTO = QuestionSaveDTO.builder()
-                .challengeId(1)
-                .title("수정 테스트 제목")
-                .content("글 수정 테스트")
+                .challengeId(challenge.getId())
+                .title("수정되었습니다")
+                .content("내용")
                 .build();
-        //when
-        boolean update = questionService.update(save, updateDTO, member2);
-        //then
-        Assertions.assertThat(update).isFalse();
+        // 작성자가 아닌 사용자
+        CustomMemberDetails principal = (CustomMemberDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member user = principal.getMember();
+        ReflectionTestUtils.setField(user, "id", 2L);
+        // when, then
+        assertThrows(AccessDeniedException.class, () -> questionService.update(save.getId(), updateDTO, user));
     }
 
+    @Test
+    @DisplayName("작성자가 질문을 삭제하면 삭제되어야한다")
+    void deleteSucc() {
+        // given
+        Question save = questionRepository.save(Question.builder()
+                .memberId(member1)
+                .title("질문 조회 테스트")
+                .content("내용")
+                .challengeId(challenge)
+                .build());
+
+        // when
+        questionService.delete(save.getId(), member1);
+        // then
+        Optional<Question> find = questionRepository.findById(save.getId());
+        assertThat(find).isEmpty();
+    }
+
+    @Test
+    @WithCustomMockUser
+    @DisplayName("작성자가 아닌 사용자가 질문을 삭제하면 삭제되지않아야한다")
+    void deleteFail() {
+        // given
+        Question save = questionRepository.save(Question.builder()
+                .memberId(member1)
+                .title("질문 조회 테스트")
+                .content("내용")
+                .challengeId(challenge)
+                .build());
+
+        // 작성자가 아닌 사용자
+        CustomMemberDetails principal = (CustomMemberDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member user = principal.getMember();
+        ReflectionTestUtils.setField(user, "id", 2L);
+        // when, then
+        assertThrows(AccessDeniedException.class, () -> questionService.delete(save.getId(), user));
+    }
 }
