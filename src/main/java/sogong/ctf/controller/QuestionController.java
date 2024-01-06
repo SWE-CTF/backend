@@ -14,7 +14,6 @@ import sogong.ctf.service.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -35,11 +34,9 @@ public class QuestionController {
         if (member.getId() == null) {
             return ResponseEntity.status(403).build();
         } else {
-            Optional<Challenge> findChallenge = challengeService.findByChallengeId(saveForm.getChallengeId());//문제 번호 확인
-            if (findChallenge.isEmpty())
-                return ResponseEntity.notFound().build();//해당 문제 번호 없을 경우
+            Challenge findChallenge = challengeService.findByChallengeId(saveForm.getChallengeId());//문제 번호 확인
             try {
-                questionService.save(member, saveForm, findChallenge.get());//질문 저장
+                questionService.save(member, saveForm, findChallenge);//질문 저장
                 return ResponseEntity.ok().build();
             } catch (Exception e) {
                 log.error(e.getMessage());

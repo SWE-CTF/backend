@@ -119,7 +119,7 @@ public class QuestionService {
     }
 
     public List<QuestionPagingDTO> getQuestionsByChallengeId(long challengeId) {
-        Challenge challenge = challengeService.findByChallengeId(challengeId).get();
+        Challenge challenge = challengeService.findByChallengeId(challengeId);
         List<Question> questionList = questionRepository.findAllByChallengeId(challenge);
         return questionList.stream().map(question -> QuestionPagingDTO.builder()
                 .title(question.getTitle())
