@@ -1,6 +1,5 @@
 package sogong.ctf.exception;
 
-import jdk.jshell.spi.ExecutionControl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,14 +10,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.nio.file.AccessDeniedException;
 
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "sogong.ctf.controller")
 public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error(e.getMessage(), e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
-        return response;
+        return ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -37,7 +35,7 @@ public class ControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    protected ErrorResponse handleInternalException(ExecutionControl.InternalException e) {
+    protected ErrorResponse handleInternalException(Exception e) {
         log.error(e.getMessage(), e);
         return ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
     }
