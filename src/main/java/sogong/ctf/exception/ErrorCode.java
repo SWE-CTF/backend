@@ -17,7 +17,9 @@ public enum ErrorCode {
     CHALLENGE_NOT_EXIST(400, "No Such Challenge"),
 
     // question
-    QUESTION_NOT_EXIST(400,"No Such Question");
+    QUESTION_NOT_EXIST(400,"No Such Question"),
+    // comment
+    COMMENT_NOT_EXIST(400,"No Such Comment");
 
     private final int status;
     private final String msg;
