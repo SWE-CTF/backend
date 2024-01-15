@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import sogong.ctf.domain.Notice;
 
 import java.time.LocalDateTime;
 
@@ -16,23 +15,14 @@ public class NoticeResponseDTO {
     String content;
     String writer;
     LocalDateTime writeTime;
-    int like;
-    int dislike;
+    int readCnt;
 
     @Builder
-    public NoticeResponseDTO(long challengeId, String title, String content, String writer, long commentId, LocalDateTime writeTime) {
+    public NoticeResponseDTO(String title, String content, String writer, LocalDateTime writeTime, int readCnt) {
         this.title = title;
         this.content = content;
         this.writer = writer;
         this.writeTime = writeTime;
-    }
-
-    public static NoticeResponseDTO toNoticeResponseDTO(Notice n) {
-        return NoticeResponseDTO.builder()
-                .title(n.getTitle())
-                .content(n.getContent())
-                .writer(n.getMemberId().getNickname())
-                .writeTime(n.getWriteTime())
-                .build();
+        this.readCnt = readCnt;
     }
 }

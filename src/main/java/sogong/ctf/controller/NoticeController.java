@@ -11,9 +11,9 @@ import sogong.ctf.dto.request.NoticeSaveDTO;
 import sogong.ctf.dto.response.NoticePagingDTO;
 import sogong.ctf.dto.response.NoticeResponseDTO;
 import sogong.ctf.service.AuthUser;
-import sogong.ctf.service.MemberService;
 import sogong.ctf.service.NoticeService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,59 +22,51 @@ import java.util.List;
 @RequestMapping("api/notice")
 public class NoticeController {
     private final NoticeService noticeService;
-    private final MemberService memberService;
 
-    @PostMapping("/save")//공지사항 작성
-    public ResponseEntity saveNotice(@RequestBody NoticeSaveDTO saveForm, @AuthUser Member member) {//질문 작성
-        try {
-            noticeService.save(member, saveForm);//질문 저장
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
+    /* *
+     * 공지사항 작성
+     */
+    @PostMapping("/save")
+    public ResponseEntity saveNotice(@RequestBody @Valid NoticeSaveDTO saveForm, @AuthUser Member member) {
+        noticeService.save(saveForm, member);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{noticeId}") //공지사항 상세조회
+    /* *
+     * 공지사항 상세조회
+     */
+    @GetMapping("/{noticeId}")
     public ResponseEntity<NoticeResponseDTO> getNotice(@PathVariable("noticeId") long noticeId) {
         NoticeResponseDTO notice = noticeService.getDetails(noticeId);
-        if (notice != null) {
-            noticeService.seeNotice(noticeId);//조회수 증가
-            return ResponseEntity.ok(notice);
-        } else {
-            return ResponseEntity.status(400).build();
-        }
+        return ResponseEntity.ok(notice);
+
     }
 
+    /* *
+     * 공지사항 식제
+     */
     @DeleteMapping("/{noticeId}")
     public ResponseEntity deleteNotice(@PathVariable("noticeId") long noticeId, @AuthUser Member member) {
-        Member writer = noticeService.findWriter(noticeId);
-        if (memberService.IsEquals(member, writer)) {//글 작성자와 지우려고 하는 사람 일치 여부 확인
-            noticeService.delete(noticeId);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(403).build();
-        }
+        noticeService.delete(noticeId, member);
+        return ResponseEntity.ok().build();
     }
 
+    /* *
+     * 공지사항 수정
+     */
     @PutMapping("/{noticeId}")
-    public ResponseEntity updateNotice(@PathVariable("noticeId") long noticeId, @RequestBody NoticeSaveDTO saveForm, @AuthUser Member member) {
-        Member writer = noticeService.findWriter(noticeId);
-        if (memberService.IsEquals(member, writer)) {
-            noticeService.update(noticeId, saveForm);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(403).build();
-        }
+    public ResponseEntity updateNotice(@PathVariable("noticeId") long noticeId, @RequestBody @Valid NoticeSaveDTO updateForm, @AuthUser Member member) {
+        noticeService.update(noticeId, updateForm, member);
+        return ResponseEntity.ok().build();
     }
 
+    /* *
+     * 공지사항 페이징
+     */
     @GetMapping("/paging")
     public ResponseEntity<List<NoticePagingDTO>> paging(@PageableDefault(page = 1) Pageable page) {
-        try {
-            List<NoticePagingDTO> paging = noticeService.paging(page);
-            return ResponseEntity.ok(paging);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
+        List<NoticePagingDTO> paging = noticeService.paging(page);
+        return ResponseEntity.ok(paging);
     }
 
 }

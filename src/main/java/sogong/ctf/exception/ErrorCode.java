@@ -12,6 +12,8 @@ public enum ErrorCode {
     INVALID_TYPE_VALUE(400, " Invalid Type Value"),
     HANDLE_UNAUTHORIZED_USER(401,"인증되지 않은 사용자입니다."),
     HANDLE_ACCESS_DENIED(403, "Access is Denied"),
+    // notice
+    NOTICE_NOT_EXIST(400,"No Such Notice"),
     // challenge
     CATEGORY_NOT_EXIST(400, "No Such Category"),
     CHALLENGE_NOT_EXIST(400, "No Such Challenge"),

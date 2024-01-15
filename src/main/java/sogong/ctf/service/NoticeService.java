@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sogong.ctf.domain.Member;
@@ -12,21 +13,22 @@ import sogong.ctf.domain.Notice;
 import sogong.ctf.dto.request.NoticeSaveDTO;
 import sogong.ctf.dto.response.NoticePagingDTO;
 import sogong.ctf.dto.response.NoticeResponseDTO;
+import sogong.ctf.exception.ErrorCode;
+import sogong.ctf.exception.NoticeNotFoundException;
 import sogong.ctf.repository.NoticeRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class NoticeService {
     private final NoticeRepository noticeRepository;
+    private final MemberService memberService;
 
     @Transactional
-    public long save(Member member, NoticeSaveDTO saveForm) {
+    public long save(NoticeSaveDTO saveForm, Member member) {
 
         Notice n = Notice.builder().memberId(member)
                 .title(saveForm.getTitle())
@@ -38,31 +40,43 @@ public class NoticeService {
         return save.getId();
     }
 
-    public Optional<Notice> findByNoticeId(long noticeId) {
-        return noticeRepository.findById(noticeId);
+    public Notice findByNoticeId(long noticeId) {
+        return noticeRepository.findById(noticeId).orElseThrow(() -> new NoticeNotFoundException(ErrorCode.NOTICE_NOT_EXIST));
     }
 
     public Member findWriter(long noticeId) {
-        Member writer = findByNoticeId(noticeId).get().getMemberId();
-        return writer;
+        return findByNoticeId(noticeId).getMemberId();
     }
 
     public NoticeResponseDTO getDetails(long noticeId) {
-        Optional<Notice> n = findByNoticeId(noticeId);
-        if (n.isEmpty()) return null;
-        return NoticeResponseDTO.toNoticeResponseDTO(n.get());
+        Notice notice = findByNoticeId(noticeId);
+        seeNotice(noticeId); // 조회수 증가
+
+        return NoticeResponseDTO.builder()
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .writer(notice.getMemberId().getNickname())
+                .writeTime(notice.getWriteTime())
+                .readCnt(notice.getReadCnt())
+                .build();
     }
 
     @Transactional
-    public void delete(long noticeId) {
-        Notice n = findByNoticeId(noticeId).get();
-        noticeRepository.delete(n);
+    public void delete(long noticeId, Member member) {
+        Member writer = findWriter(noticeId);
+        if (memberService.IsEquals(writer, member)) {
+            Notice n = findByNoticeId(noticeId);
+            noticeRepository.delete(n);
+        } else throw new AccessDeniedException("사용자와 작성자가 일치하지 않습니다");
     }
 
     @Transactional
-    public void update(long noticeId, NoticeSaveDTO noticeSaveDTO) {
-        Notice n = findByNoticeId(noticeId).orElseThrow(() -> new NoSuchElementException());
-        n.updateNotice(noticeSaveDTO.getTitle(), noticeSaveDTO.getContent());
+    public void update(long noticeId, NoticeSaveDTO noticeSaveDTO, Member member) {
+        Member writer = findWriter(noticeId);
+        if (memberService.IsEquals(writer, member)) {
+            Notice n = findByNoticeId(noticeId);
+            n.updateNotice(noticeSaveDTO.getTitle(), noticeSaveDTO.getContent());
+        } else throw new AccessDeniedException("사용자와 작성자가 일치하지 않습니다");
     }
 
     public List<NoticePagingDTO> paging(Pageable page) {
@@ -76,7 +90,7 @@ public class NoticeService {
 
     @Transactional
     public void seeNotice(long noticeId) {
-        Notice notice = findByNoticeId(noticeId).get();
+        Notice notice = findByNoticeId(noticeId);
         notice.increaseReadCnt();
     }
 
@@ -86,7 +100,6 @@ public class NoticeService {
         Page<Notice> notices = noticeRepository.findAll(PageRequest.of(p, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
         return notices;
     }
-
 
     public int getTotalPage(Pageable page) {
         Page<Notice> questions = findAllPage(page);
