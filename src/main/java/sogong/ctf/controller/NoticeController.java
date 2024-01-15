@@ -39,7 +39,6 @@ public class NoticeController {
     public ResponseEntity<NoticeResponseDTO> getNotice(@PathVariable("noticeId") long noticeId) {
         NoticeResponseDTO notice = noticeService.getDetails(noticeId);
         return ResponseEntity.ok(notice);
-
     }
 
     /* *

@@ -48,6 +48,7 @@ public class NoticeService {
         return findByNoticeId(noticeId).getMemberId();
     }
 
+    @Transactional
     public NoticeResponseDTO getDetails(long noticeId) {
         Notice notice = findByNoticeId(noticeId);
         seeNotice(noticeId); // 조회수 증가

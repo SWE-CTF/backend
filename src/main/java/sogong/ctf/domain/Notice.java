@@ -19,6 +19,7 @@ public class Notice extends Post {
     @Column(name = "notice_id")
     private Long id;
 
+    @Column(name = "read_cnt")
     private int readCnt;
 
 
