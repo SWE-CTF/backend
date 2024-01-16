@@ -1,7 +1,6 @@
 package sogong.ctf.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Member;
@@ -15,7 +14,6 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/comment")
-@Slf4j
 public class QuestionCommentController {
     private final QuestionCommentService commentService;
 
@@ -24,7 +22,6 @@ public class QuestionCommentController {
      */
     @PostMapping("/{questionId}/save")
     public ResponseEntity saveComment(@PathVariable("questionId") long questionId, @RequestBody QuestionCommentSaveDTO request, @AuthUser Member member) {
-        log.info("댓글 작성 요청");
         long save = commentService.save(member, questionId, request.getContent());
 
         Map<String, Long> result = new HashMap<>();

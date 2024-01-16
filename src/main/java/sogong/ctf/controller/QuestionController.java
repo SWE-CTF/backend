@@ -1,7 +1,6 @@
 package sogong.ctf.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sogong.ctf.domain.Challenge;
@@ -10,13 +9,15 @@ import sogong.ctf.dto.request.QuestionSaveDTO;
 import sogong.ctf.dto.response.CommentResponseDTO;
 import sogong.ctf.dto.response.QuestionPagingDTO;
 import sogong.ctf.dto.response.QuestionResponseDTO;
-import sogong.ctf.service.*;
+import sogong.ctf.service.AuthUser;
+import sogong.ctf.service.ChallengeService;
+import sogong.ctf.service.QuestionCommentService;
+import sogong.ctf.service.QuestionService;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("api/question")
 public class QuestionController {
@@ -29,7 +30,6 @@ public class QuestionController {
      */
     @PostMapping("/save")
     public ResponseEntity saveQuestion(@RequestBody @Valid QuestionSaveDTO saveForm, @AuthUser Member member) { // 질문 작성
-        log.info("질문 게시글 작성 요청");
         Challenge findChallenge = challengeService.findByChallengeId(saveForm.getChallengeId()); // 문제 번호 확인
         questionService.save(member, saveForm, findChallenge); // 질문 저장
         return ResponseEntity.ok().build();
