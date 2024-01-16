@@ -20,7 +20,6 @@ import sogong.ctf.domain.Member;
 import sogong.ctf.domain.Role;
 import sogong.ctf.dto.request.ChallengeSaveDTO;
 import sogong.ctf.dto.request.ChallengeSearchDTO;
-import sogong.ctf.exception.ChallengeNotFoundException;
 import sogong.ctf.mockConfig.WithCustomMockUser;
 import sogong.ctf.repository.CategoryRepository;
 import sogong.ctf.repository.ChallengeRepository;
@@ -29,6 +28,7 @@ import sogong.ctf.repository.MemberRepository;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -80,7 +80,7 @@ class ChallengeServiceTest {
         long save = challengeService.save(saveForm, member1);
 
         //then
-        Challenge find = challengeService.findByChallengeId(save);
+        Challenge find =challengeRepository.findById(save).get();
         Assertions.assertThat(save).isEqualTo(find.getId());
     }
 
@@ -109,7 +109,7 @@ class ChallengeServiceTest {
         long save = challengeService.save(saveForm, member1);
 
         //then
-        Challenge find = challengeService.findByChallengeId(save);
+        Challenge find = challengeRepository.findById(save).get();
         int findFiles = fileService.getFiles(find).size();
 
         Assertions.assertThat(save).isEqualTo(find.getId());
@@ -149,9 +149,8 @@ class ChallengeServiceTest {
         // when
         challengeService.updateChallenge(save.getId(), updateForm, member1);
         // then
-        Challenge find = challengeService.findByChallengeId(save.getId());
+        Challenge find = challengeRepository.findById(save.getId()).get();
         Assertions.assertThat(find.getTitle()).isEqualTo("오주은의 덧셈 계산기");
-
     }
 
     @Test
@@ -213,7 +212,8 @@ class ChallengeServiceTest {
         //when
         challengeService.deleteChallenge(save.getId(), member1);
         //then
-        assertThrows(ChallengeNotFoundException.class, () -> challengeService.findByChallengeId(save.getId()));
+        Optional<Challenge> find = challengeRepository.findById(save.getId());
+        Assertions.assertThat(find).isEmpty();
     }
 
     @Test
