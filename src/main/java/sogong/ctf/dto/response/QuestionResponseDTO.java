@@ -39,10 +39,10 @@ public class QuestionResponseDTO {
         long commentId = (q.getAdoptedComment() != null) ? q.getAdoptedComment().getId() : -1;
         return QuestionResponseDTO.builder()
                 .questionId(q.getId())
-                .challengeId(q.getChallengeId().getId())
+                .challengeId(q.getChallenge().getId())
                 .title(q.getTitle())
                 .content(q.getContent())
-                .writer(q.getMemberId().getNickname())
+                .writer(q.getMember().getNickname())
                 .commentId(commentId)
                 .writeTime(q.getWriteTime())
                 .build();

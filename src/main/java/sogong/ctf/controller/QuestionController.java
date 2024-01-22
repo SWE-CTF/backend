@@ -39,7 +39,7 @@ public class QuestionController {
     문제 별 질문게시글 조회
      */
     @GetMapping("/challenge/{challengeId}")
-    public ResponseEntity<List<QuestionPagingDTO>> getQuestionByChallengeId(@PathVariable("challengeId") int challengeId) {
+    public ResponseEntity<List<QuestionPagingDTO>> getQuestionByChallengeId(@PathVariable("challengeId") Long challengeId) {
         List<QuestionPagingDTO> questions = questionService.getQuestionsByChallengeId(challengeId);
         if (questions.size() == 0)
             return ResponseEntity.notFound().build();
@@ -50,7 +50,7 @@ public class QuestionController {
     질문 게시글 상세조회
      */
     @GetMapping("/{questionId}")
-    public ResponseEntity<QuestionResponseDTO> getQuestion(@PathVariable("questionId") int questionId) {
+    public ResponseEntity<QuestionResponseDTO> getQuestion(@PathVariable("questionId") Long questionId) {
         QuestionResponseDTO question = questionService.getDetails(questionId);
         if (question != null) {
             List<CommentResponseDTO> commentList = commentService.getComments(questionId);
@@ -65,8 +65,9 @@ public class QuestionController {
     질문 게시글 삭제
      */
     @DeleteMapping("/{questionId}")
-    public ResponseEntity deleteQuestion(@PathVariable("questionId") int questionId, @AuthUser Member member) {
-        questionService.delete(questionId, member);
+    public ResponseEntity deleteQuestion(@PathVariable("questionId") Long questionId, @AuthUser Member member) {
+        questionService.validateQuestionByMember(member.getId(), questionId);
+        questionService.delete(questionId);
         return ResponseEntity.ok().build();
     }
 
@@ -74,8 +75,9 @@ public class QuestionController {
     질문 게시글 수정
      */
     @PutMapping("/{questionId}")
-    public ResponseEntity updateQuestion(@PathVariable("questionId") int questionId, @RequestBody QuestionSaveDTO questionupdateDTO, @AuthUser Member member) {
-        questionService.update(questionId, questionupdateDTO, member);
+    public ResponseEntity updateQuestion(@PathVariable("questionId") Long questionId, @RequestBody QuestionSaveDTO questionupdateDTO, @AuthUser Member member) {
+        questionService.validateQuestionByMember(member.getId(), questionId);
+        questionService.update(questionId, questionupdateDTO);
         return ResponseEntity.ok().build();
     }
 

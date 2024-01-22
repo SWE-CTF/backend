@@ -29,7 +29,7 @@ public class QuestionPagingDTO {
         QuestionPagingDTO dto = QuestionPagingDTO.builder()
                 .questionId(question.getId())
                 .title(question.getTitle())
-                .nickname(question.getMemberId().getNickname())
+                .nickname(question.getMember().getNickname())
                 .writeTime(question.getWriteTime())
                 .build();
 

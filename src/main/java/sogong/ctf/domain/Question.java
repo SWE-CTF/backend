@@ -14,20 +14,20 @@ public class Question extends Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id")
-    private Challenge challengeId;
+    private Challenge challenge;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "adopted_comment")
     private Comment adoptedComment;
 
     @Builder
-    public Question(String title, String content, Challenge challengeId, Member memberId, LocalDateTime writeTime) {
+    public Question(String title, String content, Challenge challenge, Member memberId, LocalDateTime writeTime) {
         super(title, content, writeTime, memberId);
-        this.challengeId = challengeId;
+        this.challenge = challenge;
         this.adoptedComment = null;
     }
 

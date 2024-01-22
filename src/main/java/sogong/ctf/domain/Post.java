@@ -16,13 +16,13 @@ public abstract class Post {
     private LocalDateTime writeTime;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member memberId;
+    private Member member;
 
-    public Post(String title, String content, LocalDateTime writeTime, Member memberId) {
+    public Post(String title, String content, LocalDateTime writeTime, Member member) {
         this.title = title;
         this.content = content;
         this.writeTime = writeTime;
-        this.memberId = memberId;
+        this.member = member;
     }
 
     protected void updateTitle(String title) {

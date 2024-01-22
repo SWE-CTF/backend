@@ -27,14 +27,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class QuestionService {
     private final QuestionRepository questionRepository;
-    private final MemberService memberService;
-    private final ChallengeService challengeService;
 
     @Transactional
     public long save(Member member, QuestionSaveDTO saveForm, Challenge challenge) {
 
         Question q = Question.builder().title(saveForm.getTitle())
-                .challengeId(challenge)
+                .challenge(challenge)
                 .content(saveForm.getContent())
                 .memberId(member)
                 .writeTime(LocalDateTime.now())
@@ -44,40 +42,31 @@ public class QuestionService {
         return save.getId();
     }
 
-    public Question findByQuestionId(long questionId) {
-        return questionRepository.findById(questionId).orElseThrow(()->new QuestionNotFoundException(ErrorCode.CHALLENGE_NOT_EXIST));
+    public Question findByQuestionId(Long questionId) {
+        return questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(ErrorCode.CHALLENGE_NOT_EXIST));
     }
 
-    private Member findWriter(long questionId) {
-        Member writer = findByQuestionId(questionId).getMemberId();
-        return writer;
+
+    public void validateQuestionByMember(final Long member, final Long questionId) {
+        if (!questionRepository.existsByMemberIdAndId(member, questionId))
+            throw new AccessDeniedException("질문 글 작성자와 일치하지 않는 사용자입니다");
     }
 
-    public QuestionResponseDTO getDetails(long questionId) {
+    public QuestionResponseDTO getDetails(Long questionId) {
         Question q = findByQuestionId(questionId);
         return QuestionResponseDTO.toQuestionResponseDTO(q);
     }
 
     @Transactional
-    public void delete(long questionId, Member member) {
+    public void delete(Long questionId) {
         Question q = findByQuestionId(questionId);
-        Member writer = findWriter(questionId);
-        if (memberService.IsEquals(member, writer)) { // 글 작성자와 지우려고 하는 사람 일치 여부 확인
-            questionRepository.delete(q);
-        } else {
-            throw new AccessDeniedException("질문 글 작성자와 일치하지 않는 사용자입니다");
-        }
+        questionRepository.delete(q);
     }
 
     @Transactional
-    public void update(long questionId, QuestionSaveDTO questionSaveDTO, Member member) {
+    public void update(Long questionId, QuestionSaveDTO questionSaveDTO) {
         Question q = findByQuestionId(questionId);
-        Member writer = findWriter(questionId);
-        if (memberService.IsEquals(member, writer)) {
-            q.updateQuestion(questionSaveDTO.getTitle(), questionSaveDTO.getContent());
-        } else {
-            throw new AccessDeniedException("질문 글 작성자와 일치하지 않는 사용자입니다");
-        }
+        q.updateQuestion(questionSaveDTO.getTitle(), questionSaveDTO.getContent());
     }
 
     public List<QuestionPagingDTO> paging(Pageable page) {
@@ -102,19 +91,18 @@ public class QuestionService {
                         .title(question.getTitle())
                         .questionId(question.getId())
                         .writeTime(question.getWriteTime())
-                        .nickname(question.getMemberId().getNickname())
+                        .nickname(question.getMember().getNickname())
                         .build()
                 ).collect(Collectors.toList());
     }
 
-    public List<QuestionPagingDTO> getQuestionsByChallengeId(long challengeId) {
-        Challenge challenge = challengeService.findByChallengeId(challengeId);
-        List<Question> questionList = questionRepository.findAllByChallengeId(challenge);
+    public List<QuestionPagingDTO> getQuestionsByChallengeId(Long challengeId) {
+        List<Question> questionList = questionRepository.findAllByChallengeId(challengeId);
         return questionList.stream().map(question -> QuestionPagingDTO.builder()
                 .title(question.getTitle())
                 .questionId(question.getId())
                 .writeTime(question.getWriteTime())
-                .nickname(question.getMemberId().getNickname())
+                .nickname(question.getMember().getNickname())
                 .build()
         ).collect(Collectors.toList());
     }
