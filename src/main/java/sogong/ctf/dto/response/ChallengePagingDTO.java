@@ -20,7 +20,7 @@ public class ChallengePagingDTO {
         ChallengePagingDTO dto = new ChallengePagingDTO();
         dto.setId(challenge.getId());
         dto.setTitle(challenge.getTitle());
-        dto.setExaminer(challenge.getExaminer().getNickname());
+        dto.setExaminer(challenge.getMember().getNickname());
         dto.setCorrect_cnt(challenge.getCorrectCnt());
         return dto;
     }

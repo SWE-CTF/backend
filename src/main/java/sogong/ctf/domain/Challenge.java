@@ -23,8 +23,8 @@ public class Challenge {
     private float time;
     private String hint;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "examiner")
-    private Member examiner;//출제자
+    @JoinColumn(name = "member_id")
+    private Member member;//출제자
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -38,13 +38,13 @@ public class Challenge {
     private List<TestCase> testcases = new ArrayList<>();
 
     @Builder
-    public Challenge(String title, String content, Category categoryId, float memory, float time, Member examiner, String hint, boolean fileExist) {
+    public Challenge(String title, String content, Category categoryId, float memory, float time, Member member, String hint, boolean fileExist) {
         this.title = title;
         this.content = content;
         this.categoryId = categoryId;
         this.memory = memory;
         this.time = time;
-        this.examiner = examiner;
+        this.member = member;
         this.hint = hint;
         this.fileExist = fileExist;
     }

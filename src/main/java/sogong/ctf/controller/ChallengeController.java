@@ -71,9 +71,10 @@ public class ChallengeController {
     문제 삭제
      */
     @DeleteMapping("/{challengeId}")
-    public ResponseEntity deleteChallenge(@PathVariable("challengeId") int challengeId,
+    public ResponseEntity deleteChallenge(@PathVariable("challengeId") Long challengeId,
                                           @AuthUser Member member) {
-        challengeService.deleteChallenge(challengeId, member);
+        challengeService.validateChallengeByMember(member.getId(), challengeId);
+        challengeService.deleteChallenge(challengeId);
         return ResponseEntity.noContent().build();
     }
 
@@ -81,14 +82,14 @@ public class ChallengeController {
     문제 수정
      */
     @PutMapping("{challengeId}")
-    public ResponseEntity updateChallenge(@PathVariable("challengeId") int challengeId,
+    public ResponseEntity updateChallenge(@PathVariable("challengeId") Long challengeId,
                                           @RequestPart("saveForm") ChallengeSaveDTO updateForm,
                                           @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                           @AuthUser Member member) {
         updateForm.setFiles(files);
-        challengeService.updateChallenge(challengeId, updateForm, member);
+        challengeService.validateChallengeByMember(member.getId(), challengeId);
+        challengeService.updateChallenge(challengeId, updateForm);
         return ResponseEntity.ok().build();
-
     }
 
     /*

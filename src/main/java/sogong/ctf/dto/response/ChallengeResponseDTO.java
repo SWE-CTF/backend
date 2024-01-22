@@ -30,7 +30,7 @@ public class ChallengeResponseDTO {
                 .content(challenge.getContent())
                 .correctCnt(challenge.getCorrectCnt())
                 .hint(challenge.getHint())
-                .examiner(challenge.getExaminer().getUsername())
+                .examiner(challenge.getMember().getUsername())
                 .memory(challenge.getMemory())
                 .time(challenge.getTime())
                 .testcases(testCases)

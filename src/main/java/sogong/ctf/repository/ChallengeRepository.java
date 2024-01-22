@@ -12,4 +12,5 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     public List<Challenge> findAllByCategoryId(Category category);
 
     public List<Challenge> findAllByTitleContaining(String keyword);
+    public boolean existsByMemberIdAndId(Long member,Long id);
 }
