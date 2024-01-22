@@ -21,7 +21,9 @@ public class QuestionCommentController {
      * 댓글 작성
      */
     @PostMapping("/{questionId}/save")
-    public ResponseEntity saveComment(@PathVariable("questionId") long questionId, @RequestBody QuestionCommentSaveDTO request, @AuthUser Member member) {
+    public ResponseEntity saveComment(@PathVariable("questionId") Long questionId,
+                                      @RequestBody QuestionCommentSaveDTO request,
+                                      @AuthUser Member member) {
         long save = commentService.save(member, questionId, request.getContent());
 
         Map<String, Long> result = new HashMap<>();
@@ -33,8 +35,11 @@ public class QuestionCommentController {
      * 댓글 수정
      */
     @PutMapping("/{commentId}")
-    public ResponseEntity updateComment(@PathVariable("commentId") long commentId, @RequestBody QuestionCommentSaveDTO request, @AuthUser Member member) {
-        commentService.update(commentId, request.getContent(), member);
+    public ResponseEntity updateComment(@PathVariable("commentId") Long commentId,
+                                        @RequestBody QuestionCommentSaveDTO request,
+                                        @AuthUser Member member) {
+        commentService.validateMemberByCommentId(member.getId(), commentId);
+        commentService.update(commentId, request.getContent());
         return ResponseEntity.ok().build();
     }
 
@@ -42,8 +47,10 @@ public class QuestionCommentController {
      * 댓글 삭제
      */
     @DeleteMapping("/{commentId}")
-    public ResponseEntity deleteComment(@PathVariable("commentId") long commentId, @AuthUser Member member) {
-        commentService.delete(commentId, member);
+    public ResponseEntity deleteComment(@PathVariable("commentId") Long commentId,
+                                        @AuthUser Member member) {
+        commentService.validateMemberByCommentId(member.getId(), commentId);
+        commentService.delete(commentId);
         return ResponseEntity.status(204).build();
     }
 
@@ -51,8 +58,10 @@ public class QuestionCommentController {
      * 댓글 채택
      */
     @PostMapping("/{commentId}/adopt")
-    public ResponseEntity adoptComment(@PathVariable("commentId") long commentId, @AuthUser Member member) {
-        commentService.adopt(commentId, member);
+    public ResponseEntity adoptComment(@PathVariable("commentId") Long commentId,
+                                       @AuthUser Member member) {
+        commentService.validateMemberByCommentId(member.getId(), commentId);
+        commentService.adopt(commentId);
         return ResponseEntity.ok().build();
     }
 }

@@ -25,7 +25,8 @@ public class NoticeController {
      * 공지사항 작성
      */
     @PostMapping("/save")
-    public ResponseEntity saveNotice(@RequestBody @Valid NoticeSaveDTO saveForm, @AuthUser Member member) {
+    public ResponseEntity saveNotice(@RequestBody @Valid NoticeSaveDTO saveForm,
+                                     @AuthUser Member member) {
         noticeService.save(saveForm, member);
         return ResponseEntity.ok().build();
     }
@@ -34,7 +35,7 @@ public class NoticeController {
      * 공지사항 상세조회
      */
     @GetMapping("/{noticeId}")
-    public ResponseEntity<NoticeResponseDTO> getNotice(@PathVariable("noticeId") long noticeId) {
+    public ResponseEntity<NoticeResponseDTO> getNotice(@PathVariable("noticeId") Long noticeId) {
         NoticeResponseDTO notice = noticeService.getDetails(noticeId);
         return ResponseEntity.ok(notice);
     }
@@ -43,8 +44,10 @@ public class NoticeController {
      * 공지사항 식제
      */
     @DeleteMapping("/{noticeId}")
-    public ResponseEntity deleteNotice(@PathVariable("noticeId") long noticeId, @AuthUser Member member) {
-        noticeService.delete(noticeId, member);
+    public ResponseEntity deleteNotice(@PathVariable("noticeId") Long noticeId,
+                                       @AuthUser Member member) {
+        noticeService.validateMemberByNoticeId(member.getId(), noticeId);
+        noticeService.delete(noticeId);
         return ResponseEntity.ok().build();
     }
 
@@ -52,8 +55,11 @@ public class NoticeController {
      * 공지사항 수정
      */
     @PutMapping("/{noticeId}")
-    public ResponseEntity updateNotice(@PathVariable("noticeId") long noticeId, @RequestBody @Valid NoticeSaveDTO updateForm, @AuthUser Member member) {
-        noticeService.update(noticeId, updateForm, member);
+    public ResponseEntity updateNotice(@PathVariable("noticeId") Long noticeId,
+                                       @RequestBody @Valid NoticeSaveDTO updateForm,
+                                       @AuthUser Member member) {
+        noticeService.validateMemberByNoticeId(member.getId(), noticeId);
+        noticeService.update(noticeId, updateForm);
         return ResponseEntity.ok().build();
     }
 

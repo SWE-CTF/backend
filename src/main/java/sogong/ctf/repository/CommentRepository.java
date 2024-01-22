@@ -7,5 +7,8 @@ import sogong.ctf.domain.Question;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    public List<Comment> findAllByQuestionId(Question question);
+    List<Comment> findAllByQuestionId(Question question);
+
+    boolean existsByMemberIdAndId(Long memberId, Long id);
+
 }

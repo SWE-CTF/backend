@@ -28,14 +28,13 @@ public class NoticePagingDTO {
     }
 
     public static NoticePagingDTO toDTO(Notice notice) {
-        NoticePagingDTO dto = NoticePagingDTO.builder()
+        return NoticePagingDTO.builder()
                 .noticeId(notice.getId())
                 .title(notice.getTitle())
-                .nickname(notice.getMemberId().getNickname())
+                .nickname(notice.getMember().getNickname())
                 .writeTime(notice.getWriteTime())
                 .readCnt(notice.getReadCnt())
                 .build();
-        return dto;
     }
 
 }

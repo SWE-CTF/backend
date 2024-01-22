@@ -25,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeService {
     private final NoticeRepository noticeRepository;
-    private final MemberService memberService;
 
     @Transactional
     public long save(NoticeSaveDTO saveForm, Member member) {
@@ -40,12 +39,13 @@ public class NoticeService {
         return save.getId();
     }
 
-    public Notice findByNoticeId(long noticeId) {
+    public Notice findByNoticeId(Long noticeId) {
         return noticeRepository.findById(noticeId).orElseThrow(() -> new NoticeNotFoundException(ErrorCode.NOTICE_NOT_EXIST));
     }
 
-    public Member findWriter(long noticeId) {
-        return findByNoticeId(noticeId).getMemberId();
+    public void validateMemberByNoticeId(Long memberId, Long noticeId) {
+        if (!noticeRepository.existsByMemberIdAndId(memberId, noticeId))
+            throw new AccessDeniedException("사용자와 작성자가 일치하지 않습니다");
     }
 
     @Transactional
@@ -56,28 +56,22 @@ public class NoticeService {
         return NoticeResponseDTO.builder()
                 .title(notice.getTitle())
                 .content(notice.getContent())
-                .writer(notice.getMemberId().getNickname())
+                .writer(notice.getMember().getNickname())
                 .writeTime(notice.getWriteTime())
                 .readCnt(notice.getReadCnt())
                 .build();
     }
 
     @Transactional
-    public void delete(long noticeId, Member member) {
-        Member writer = findWriter(noticeId);
-        if (memberService.IsEquals(writer, member)) {
-            Notice n = findByNoticeId(noticeId);
-            noticeRepository.delete(n);
-        } else throw new AccessDeniedException("사용자와 작성자가 일치하지 않습니다");
+    public void delete(Long noticeId) {
+        Notice n = findByNoticeId(noticeId);
+        noticeRepository.delete(n);
     }
 
     @Transactional
-    public void update(long noticeId, NoticeSaveDTO noticeSaveDTO, Member member) {
-        Member writer = findWriter(noticeId);
-        if (memberService.IsEquals(writer, member)) {
-            Notice n = findByNoticeId(noticeId);
-            n.updateNotice(noticeSaveDTO.getTitle(), noticeSaveDTO.getContent());
-        } else throw new AccessDeniedException("사용자와 작성자가 일치하지 않습니다");
+    public void update(Long noticeId, NoticeSaveDTO noticeSaveDTO) {
+        Notice n = findByNoticeId(noticeId);
+        n.updateNotice(noticeSaveDTO.getTitle(), noticeSaveDTO.getContent());
     }
 
     public List<NoticePagingDTO> paging(Pageable page) {
@@ -90,7 +84,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public void seeNotice(long noticeId) {
+    public void seeNotice(Long noticeId) {
         Notice notice = findByNoticeId(noticeId);
         notice.increaseReadCnt();
     }
@@ -98,8 +92,7 @@ public class NoticeService {
     private Page<Notice> findAllPage(Pageable page) {
         int p = page.getPageNumber() - 1;
         int pageLimit = 10;
-        Page<Notice> notices = noticeRepository.findAll(PageRequest.of(p, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
-        return notices;
+        return noticeRepository.findAll(PageRequest.of(p, pageLimit, Sort.by(Sort.Direction.DESC, "id")));
     }
 
     public int getTotalPage(Pageable page) {
