@@ -49,6 +49,13 @@ public class Member {
         this.role = role;
     }
 
+    public Member(Long id, String username, String password, Role role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
     public void addAttempt(Attempt attempt) {
         this.attempts.add(attempt);
     }

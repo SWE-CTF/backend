@@ -31,6 +31,13 @@ public class Question extends Post {
         this.adoptedComment = null;
     }
 
+    public Question(Long id, String title, String content, Challenge challenge, Member memberId, LocalDateTime writeTime) {
+        super(title, content, writeTime, memberId);
+        this.id = id;
+        this.challenge = challenge;
+        this.adoptedComment = null;
+    }
+
     public void updateQuestion(String title, String content) {
         updateTitle(title);
         updateContent(content);

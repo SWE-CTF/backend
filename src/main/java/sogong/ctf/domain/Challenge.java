@@ -49,6 +49,18 @@ public class Challenge {
         this.fileExist = fileExist;
     }
 
+    public Challenge(Long id, String title, String content, Category categoryId, float memory, float time, Member member, String hint, boolean fileExist) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.categoryId = categoryId;
+        this.memory = memory;
+        this.time = time;
+        this.member = member;
+        this.hint = hint;
+        this.fileExist = fileExist;
+    }
+
     public void addAttempt(Attempt attempt) {
         this.attempts.add(attempt);
     }
